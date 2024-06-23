@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quadratic</title>
 </head>
+
 <body>
-    <script >
-        quadraticEquation(1, -8, 72); 
-        quadraticEquation(1, 12, 36); 
-        quadraticEquation(4, -8, 1); 
+    <script>
+        quadraticEquation(1, -8, 72);
+        quadraticEquation(1, 12, 36);
+        quadraticEquation(4, -8, 1);
 
         function quadraticEquation(a, b, c) {
-            let numberOfRoots ;
+            let numberOfRoots;
             let equation = `${a == 1 ? "" : a}x^2 ${b < 0 ? "- " + -b : "+ " + b}x ${c < 0 ? "- " + -c : "+ " + c} = 0`;
             let D = b ** 2 - 4 * a * c;
 
@@ -30,4 +32,5 @@
         }
     </script>
 </body>
+
 </html>
