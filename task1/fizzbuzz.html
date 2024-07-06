@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FizzBuzz</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <script>
+        fizzBuzz();
+
+        function fizzBuzz() {
+            let i = 1;
+            let isFizz;
+            let isBuzz;
+            let isFizzBuzz;
+            let result;
+
+            while (i <= 100) {
+                isFizz = i % 3 == 0 && "Fizz";
+                result = isFizz || i;
+                isBuzz = i % 5 == 0 && "Buzz";
+                isFizzBuzz = isFizz && isBuzz && "FizzBuzz";
+                result = isFizzBuzz || isBuzz || result;
+                console.log(result);
+                i++;
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,39 @@
+body {
+    background-image: url("../pictures/maxresdefault.jpg");
+    background-color: #ff5100;
+  }
+
+  .shadowbox {
+    position: absolute;
+    left: 50px;
+    top: 80px;
+    width: 578px;
+    height: 385px;
+    border: 1px solid #333;
+    box-shadow: 8px 8px 5px #444;
+    background-image:url("../pictures/toDo.jpg");
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+
+  .task-list {
+    position: absolute;
+    left: 260px;
+    top: 140px;
+    width: 180px;
+    opacity: 0.8;
+    background-image: linear-gradient(180deg, #f3ef0f, #01ff23 70%, #ccc);
+  }
+
+  .image-container {
+    position: relative;
+    left: 1200px;
+    top: 350px;
+    width: 150;
+    height: 200;
+    padding: 150px 100px;
+    background-image:url("joke.jpg");
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Compression</title>
+    <link rel="stylesheet" href="../css/style.css">
+  </head>
+
+  <body>
+    <script>
+
+      compress("a");
+      compress("aaa");
+      compress("aabbb");
+      compress("fffdccbbb");
+
+      function compress(str) {
+        if (!str) return;
+
+        const countLetters = (str) => {
+          let hash = {};
+          for (let letter of str) {
+            if (letter in hash) {
+              hash[letter] = ++hash[letter];
+            } else {
+              hash[letter] = 1;
+            }
+          }
+          return hash;
+        };
+
+        let countedLetters = countLetters(str);
+        printInConsole(str, countedLetters, true);
+      }
+
+      uncompress("a");
+      uncompress("a5");
+      uncompress("a2b3");
+      uncompress("a12b1c3");
+
+      function uncompress(str) {
+        if (!str) return;
+
+        let countLetters = (str) => {
+          let letter = "";
+          let count = 0;
+          let isPrevNumber = false;
+          let hash = {};
+          for (let i = 0; i < str.length; i++) {
+            if (+str[i]) {
+              if (!isPrevNumber) {
+                count = +str[i];
+                isPrevNumber = true;
+              } else {
+                count = String(count) + str[i];
+              }
+            } else {
+              letter = str[i];
+              isPrevNumber = false;
+            }
+            hash[letter] = count;
+          }
+          return hash;
+        };
+
+        let countedLetters = countLetters(str);
+        printInConsole(str, countedLetters, false);
+      }
+
+      function printInConsole(str, countedLetters, toCompess) {
+        let result = "";
+        if (str.length > 1) {
+          for (let letter in countedLetters) {
+            let count = countedLetters[letter];
+            if (toCompess) {
+              result = result + letter + count;
+            } else {
+              while (count > 0) {
+                result = result + letter;
+                count--;
+              }
+            }
+          }
+        } else {
+          result = str;
+        }
+        console.log(str + " => " + result);
+      }
+      
+    </script>
+  </body>
+</html>

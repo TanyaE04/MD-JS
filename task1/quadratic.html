@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadratic</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+    <script>
+        quadraticEquation(1, -8, 72);
+        quadraticEquation(1, 12, 36);
+        quadraticEquation(4, -8, 1);
+
+        function quadraticEquation(a, b, c) {
+            let numberOfRoots;
+            let equation = `${a == 1 ? "" : a}x^2 ${b < 0 ? "- " + -b : "+ " + b}x ${c < 0 ? "- " + -c : "+ " + c} = 0`;
+            let D = b ** 2 - 4 * a * c;
+
+            if (D > 0) {
+                let firstRoot = (-b + D ** 0.5) / (2 * a);
+                let secondRoot = (-b - D ** 0.5) / (2 * a);
+                numberOfRoots = `имеет корни x1 = ${firstRoot} и x2 = ${secondRoot}`;
+            } else if (D == 0) {
+                let root = -b / (2 * a);
+                numberOfRoots = `имеет один корень x = ${root}`;
+            } else {
+                numberOfRoots = "не имеет вещественных корней";
+            }
+            console.log(`уравнение ${equation} ${numberOfRoots}`);
+        }
+    </script>
+</body>
+
+</html>
