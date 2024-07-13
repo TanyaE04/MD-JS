@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Buttons counter</title>
+    <link rel="stylesheet" href="../css/style.css">
+  </head>
+
+  <body>
+  
+    <button class="btn" type="button" style="background-color: aqua;">Let's click!</button>
+    <button class="btn" type="button" style="background-color: greenyellow;">Let's click!</button>
+    <button class="btn" type="button" style="background-color: purple;">Let's click!</button>
+   
+   <script>
+
+        function counter() {
+            let count = 0;
+
+            return function() {
+                return ++count;
+            }
+        }
+
+        let buttons = document.querySelectorAll(".btn");
+        for(let btn = 0; btn < buttons.length; btn++) {
+            let bntCounter = counter();
+            buttons[btn].onclick = function() {
+                buttons[btn].innerText = bntCounter();
+            }
+    
+           
+        }
+    
+
+    </script>
+  </body>
+</html>
