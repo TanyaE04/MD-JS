@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pow and Calculate</title>
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+
+  <body>
+    <script>
+
+      function pow(a) {
+        return function (b) {
+          if (b === 0) {
+            return 1;
+          } else if (b === 1) {
+            return a;
+          } else if (b === -1) {
+            return 1 / a;
+          } else if (b > 0) {
+            return a * pow(a)(--b);
+          } else {
+            return (1 / a) * pow(a)(++b);
+          }
+        };
+      }
+
+      function calculate(a) {
+        return (operand) => {
+          switch (operand) {
+            case "+":
+              return (b) => a + b;
+            case "-":
+              return (b) => a - b;
+            case "*":
+              return (b) => a * b;
+            case "/":
+              return (b) => (b != 0 ? a / b : "Ошибка (на нуль делить нельзя)");
+            default:
+              return "Недопустимый операнд";
+          }
+        };
+      }
+    </script>
+  </body>
+</html>
