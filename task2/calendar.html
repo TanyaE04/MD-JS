@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calendar</title>
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+
+  <body>
+    <div class="calendar">
+      <ul class="month"></ul>
+      <ul class="weekdays"></ul>
+      <ul class="days"></ul>
+    </div>
+
+    <script>
+      
+      const WEEKDAYS = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+      const MONTHS = [
+        "Январь",
+        "Февраль",
+        "Март",
+        "Апрель",
+        "Май",
+        "Июнь",
+        "Июль",
+        "Август",
+        "Сентябрь",
+        "Октябрь",
+        "Ноябрь",
+        "Декабрь",
+      ];
+
+      let dateStr = prompt("Введите номер месяца и год (мм ГГГГ)");
+      let nameOfMonth = null;
+      let year = null;
+      let monthDays = null;
+      let prevMonthDayOfWeek = null;
+
+      fromStrToDate(dateStr);
+      createCalendarHTML();
+
+      function fromStrToDate(dateStr) {
+        let month = null;
+        if (isDateStr(dateStr)) {
+          let arr = dateStr.split(" ");
+          year = arr[1];
+          month = arr[0] - 1;
+        } else {
+          alert("Неверно введена дата");
+          let nowDate = new Date();
+          year = nowDate.getFullYear();
+          month = nowDate.getMonth();
+        }
+        nameOfMonth = MONTHS[month];
+        monthDays = new Date(year, month + 1, 0).getDate();
+        prevMonthDayOfWeek = new Date(year, month, 0).getDay();
+      }
+
+      function isDateStr(dateStr) {
+        dateStr ??= false;
+        let arr = dateStr.split(" ");
+        if (arr.length === 2) {
+          return arr[0] >= 0 && arr[0] < 12 && arr[1] > 0;
+        } else return false;
+      }
+
+      function createCalendarHTML() {
+        appendMonthHTML();
+        appendWeekDaysHTML();
+        appendDaysHTML();
+      }
+
+      function appendMonthHTML() {
+        let monthUl = document.querySelector(".month");
+        let monthLi = document.createElement("li");
+        monthLi.append(nameOfMonth);
+        let yearLi = document.createElement("li");
+        yearLi.append(year);
+        monthUl.append(monthLi, yearLi);
+      }
+
+      function appendWeekDaysHTML() {
+        let weekdaysUL = document.querySelector(".weekdays");
+        let daysList = [];
+        for (let day of WEEKDAYS) {
+          let li = document.createElement("li");
+          li.append(day);
+          daysList.push(li);
+        }
+        weekdaysUL.append(...daysList);
+        weekdaysUL.append(weekdaysUL.getElementsByTagName("li")[0]);
+      }
+
+      function appendDaysHTML() {
+        let daysUL = document.querySelector(".days");
+        let liList = [];
+        if (prevMonthDayOfWeek > 0) {
+          for (let i = 0; i < prevMonthDayOfWeek; i++) {
+            liList.push(document.createElement("li"));
+          }
+        }
+        for (let i = 1; i <= monthDays; i++) {
+          let li = document.createElement("li");
+          li.append(i);
+          liList.push(li);
+        }
+        daysUL.append(...liList);
+      }
+    </script>
+  </body>
+</html>

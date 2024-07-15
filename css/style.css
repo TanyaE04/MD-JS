@@ -60,6 +60,75 @@ body {
     cursor: pointer;
 
   }
+
+  .calendar {
+    width: 75%;
+    margin: 0;
+    padding: 3rem 2rem 2rem;
+    background: #f0e4e4;
+    text-align: center;
+    color: #0a0a0a;
+    list-style: none;
+    box-shadow: 8px 8px 5px #444;
+  }
+
+  .month {
+    margin: 0;
+    padding: 1rem 0;
+    background-color: #0775f3af;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .month li {
+    display: inline-block;
+    padding-inline: 10px;
+    text-align: center;
+    font-size: x-large;
+  }
+
+  .weekdays{
+    margin: 0;
+    padding: 1rem 0;
+    background-color: #01bef8b9;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: left;
+  }
+
+  .weekdays li{
+    display: inline-block;
+    flex: 0 0 calc(100% / 7);
+    text-align: center;
+  }
+
+  .days{
+    margin: 0;
+    padding: 1rem 0;
+    background-color: #08fceff3;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left;
+    align-content: flex-start;
+    height: 14rem;
+  }
+
+  .days li{
+    padding-bottom: 1rem;
+    list-style: none;
+    display: inline-block;
+    flex: 0 0 calc(100% / 7);
+    text-align: center;
+    color: #1f07fc;
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
   
 
   
