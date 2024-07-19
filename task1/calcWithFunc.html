@@ -13,19 +13,19 @@
     <script>
 
         function plus(a) {
-            return (b) => a + b;
+            return (b) => console.log(`Результат: ${b} + ${a} = ${b + a}`);
         }
 
         function minus(a) {
-            return (b) => b - a;
+            return (b) => console.log(`Результат: ${b} - ${a} = ${b - a}`);;
         }
 
         function times(a) {
-            return (b) => a * b;
+            return (b) => console.log(`Результат: ${b} * ${a} = ${b * a}`);;
         }
 
         function dividedBy(a) {
-            return (b) => a === 0 ? "На нуль делить нельзя" : b / a;
+            return (b) => console.log(`Результат: ${b} / ${a} = ${a === 0 ? "На нуль делить нельзя" : b / a}`);
         }
 
         function zero(f) {
