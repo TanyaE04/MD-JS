@@ -11,6 +11,21 @@
     <script>
 
       function pow(a) {
+        return function(b) {
+          let result = 1;
+          let isNegative = b < 0;
+          for (let i = Math.abs(b); i > 0; i--) {
+            result *= a;
+          }
+          if(isNegative) {
+            result = 1 / result;
+            b = `(${b})`;
+          }
+          console.log(`${a} ^ ${b} = ${result}`);
+        }
+      }
+
+      function powWithReflection(a) {
         return function (b) {
           if (b === 0) {
             return 1;
@@ -30,13 +45,25 @@
         return (operand) => {
           switch (operand) {
             case "+":
-              return (b) => a + b;
+              return (b) => {
+                console.log(`${a} ${operand} ${b} = ${a + b}`);
+                return a + b;
+              }
             case "-":
-              return (b) => a - b;
+              return (b) => {
+                console.log(`${a} ${operand} ${b} = ${a - b}`);
+                return a - b;
+              }
             case "*":
-              return (b) => a * b;
+              return (b) => {
+                console.log(`${a} ${operand} ${b} = ${a * b}`);
+                return a * b;
+              }
             case "/":
-              return (b) => (b != 0 ? a / b : "Ошибка (на нуль делить нельзя)");
+              return (b) => {
+                console.log(`${a} ${operand} ${b} = ${b != 0 ? a / b : "Ошибка (на нуль делить нельзя)"}`);
+                return b != 0 ? a / b : "Ошибка (на нуль делить нельзя)";
+              }
             default:
               return "Недопустимый операнд";
           }
