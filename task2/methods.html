@@ -11,11 +11,17 @@
     <script>
 
       function currentSums(numbers) {
+        let leftPart = [];
         numbers.reduce((sum, current, index, array) => {
+          if (index === 0) {
+            leftPart.push(String(current));
+          } else {
+            leftPart.push(`${leftPart[index - 1]} + ${current}`);
+          }
           array[index] = sum + current;
           return array[index];
         }, 0);
-        return numbers;
+        return `[${leftPart}] = [${numbers}]`;
       }
 
       function firstLettersFromString(str) {
