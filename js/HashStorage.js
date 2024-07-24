@@ -7,7 +7,7 @@ class HashStorage {
       return this.storage[key]; //obj or undefined
     }
     deleteValue(key) {
-      return this.storage[key]; //deleted or undefined
+      return delete this.storage[key]; //deleted or undefined
     }
     getKeys() {
       return Object.keys(this.storage); //obj or undefined

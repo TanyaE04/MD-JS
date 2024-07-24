@@ -129,7 +129,7 @@
 
     function cleanHTML() {
       const element = document.querySelectorAll("script")[1];
-      if (element.nextElementSibling != null) {
+      while (element.nextElementSibling != null) {
         element.nextElementSibling.remove();
       }
     }
