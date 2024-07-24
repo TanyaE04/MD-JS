@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cocktails</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body style="background-image: url('../pictures/water.jpg');">
+  <h1 class="header">Cocktails</h1>
+  <div class="flex-container">
+  <button class="btn" onclick="showAllCocktails();" type="button">
+    Перечень всех коктейлей
+  </button>
+  <button class="btn" onclick="showCocktailInfo();" type="button" >
+    Рецепт напитка
+  </button>
+  <button class="btn" onclick="addNewCocktail();" type="button" >
+    Ввод рецепта
+  </button>
+  <button class="btn" onclick="deleteTheCocktail();" type="button" >
+    Удаление рецепта
+  </button>
+</div>
+
+  <script src="../js/HashStorage.js"></script>
+  <script>
+    //methods
+    function showCocktailInfo() {
+      cleanHTML();
+      let cocktailName = prompt("Введите название коктейля");
+      if (!cocktailName) return;
+      let info = coctailsStorage.getValue(cocktailName);
+      if (info === undefined) {
+        alert("Извините, у нас пока нет такого напитка");
+        return;
+      }
+      createHTMLElement(
+        "h1",
+        `${cocktailName} (${info.isAlc ? "алкогольный" : "безалкогольный"})`,
+        "cocktail-h"
+      );
+      createHTMLList(info.ingredients, "white-font");
+      createHTMLElement("p", info.recipe, "white-font");
+    }
+
+    function showAllCocktails() {
+      cleanHTML();
+      createHTMLList(coctailsStorage.getKeys(), "white-font");
+    }
+
+    function deleteTheCocktail() {
+      cleanHTML();
+      let cocktailName = prompt(
+        "Введите название коктейля, который хотите удалить"
+      );
+      if (coctailsStorage.deleteValue(cocktailName) != undefined) {
+        alert(`Коктейль ${cocktailName} был удален`);
+      } else {
+        alert(`Нельзя удалить то, чего нет:)`);
+      }
+    }
+
+    function addNewCocktail() {
+      cleanHTML();
+      let cocktailName = prompt("Введите название коктейля");
+      if (!cocktailName) {
+        alert("Вы не ввели название коктейля");
+        return;
+      }
+
+      let isAlcStr = null;
+      do {
+        isAlcStr = prompt("Коктейль алкогольный? (да/нет)");
+        if (isAlcStr === null) return;
+      } while (
+        !(isAlcStr.toLowerCase() === "да" || isAlcStr.toLowerCase() === "нет")
+      );
+      let isAlc = isAlcStr.toLowerCase() === "да" ? true : false;
+
+      let ingredientsStr = null;
+      do {
+        ingredientsStr = prompt(
+          "Перечислите необходимые ингредиенты и их количество через запятую (Вода 50мл, Сок 20мл...)"
+        );
+        if (ingredientsStr === null) return;
+        console.log(ingredientsStr.split(",").length);
+      } while (ingredientsStr.split(",").length < 2);
+      let ingredients = ingredientsStr.split(",");
+
+      let recipe = null;
+      do {
+        recipe = prompt("Введите рецепт приготовления коктейля");
+        if (recipe === null) return;
+      } while (!recipe);
+
+      if (
+        coctailsStorage.addValue(
+          cocktailName,
+          new Cocktail(isAlc, ingredients, recipe)
+        ) != undefined
+      ) {
+        alert(`Коктейль "${cocktailName}" успешно сохранен`);
+      } else {
+        alert("Не удалось сохранить:(");
+      }
+    }
+
+    //верстка
+    function createHTMLElement(elName, str, className = "") {
+      let element = document.createElement(elName);
+      element.className = className;
+      element.append(str);
+      document.body.append(element);
+    }
+
+    function createHTMLList(arr, className = "") {
+      let ul = document.createElement("ul");
+      ul.className = className;
+      for (item of arr) {
+        let li = document.createElement("li");
+        li.append(item);
+        ul.append(li);
+      }
+      document.body.append(ul);
+    }
+
+    function cleanHTML() {
+      const element = document.querySelectorAll("script")[1];
+      if (element.nextElementSibling != null) {
+        element.nextElementSibling.remove();
+      }
+    }
+  </script>
+</body>
+
+</html>
