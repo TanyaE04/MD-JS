@@ -122,7 +122,8 @@ body {
 
 .box {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   box-sizing: border-box;
   position: relative;
   width: 754px;
@@ -131,21 +132,14 @@ body {
   border-radius: 2px;
 }
 
-.section-a {
+.section {
   position: relative;
+  margin: 10px;
+  padding: 20px;
   width: 264px;
   height: 364px;
   left: 36px;
   top: 62px;
-  background: rgba(199, 172, 29, 0.87);
-  border-radius: 2px;
-}
-
-.section-b {
-  position: relative;
-  width: 264px;
-  height: 364px;
-  left: 409px;
   background: rgba(199, 172, 29, 0.87);
   border-radius: 2px;
 }
@@ -264,4 +258,36 @@ body {
   color: #1f07fc;
   font-size: 1rem;
   line-height: 1.5rem;
+}
+
+table {
+  width: 30%;
+  border-collapse: collapse; 
+  border: solid grey;
+}
+thead > tr {
+  background: #97efad;
+}
+th {
+  padding: 15px
+}
+tbody{
+  background: lightgrey;
+}
+td {
+  padding: 10px;
+  text-align: center;
+}
+.tb-weekdays {
+  background: #8fcbddb9;
+}
+.tb-weekdays td {
+  padding: 15px
+}
+.weekends {
+  background: #0ca6d54f;
+}
+.not-current {
+  background: whitesmoke;
+  color: grey;
 }

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calendar</title>
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+
+  <body style="background-image: none; background-color: bisque;">
+    <div>
+    </div>
+
+    <script>
+      
+      const WEEKDAYS = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+      const MONTHS = [
+        "Январь",
+        "Февраль",
+        "Март",
+        "Апрель",
+        "Май",
+        "Июнь",
+        "Июль",
+        "Август",
+        "Сентябрь",
+        "Октябрь",
+        "Ноябрь",
+        "Декабрь",
+      ];
+
+      let dateStr = prompt("Введите номер месяца и год (мм ГГГГ)");
+      let nameOfMonth = null;
+      let year = null;
+      let monthDays = null;
+      let prevMonthDayOfWeek = null;
+
+      fromStrToDate(dateStr);
+      createCalendarHTML();
+
+      function fromStrToDate(dateStr) {
+        let month = null;
+        if (isDateStr(dateStr)) {
+          let arr = dateStr.split(" ");
+          year = arr[1];
+          month = arr[0] - 1;
+        } else {
+          alert("Неверно введена дата");
+          let nowDate = new Date();
+          year = nowDate.getFullYear();
+          month = nowDate.getMonth();
+        }
+        nameOfMonth = MONTHS[month];
+        monthDays = new Date(year, month + 1, 0).getDate();
+        prevMonthDayOfWeek = new Date(year, month, 0).getDay();
+        prevMonthDays = new Date(year, month, 0).getDate();
+      }
+
+      function isDateStr(dateStr) {
+        dateStr ??= false;
+        let arr = dateStr.split(" ");
+        if (arr.length === 2) {
+          return arr[0] >= 0 && arr[0] < 12 && arr[1] > 0;
+        } else return false;
+      }
+
+      function createCalendarHTML() {
+        const table = document.createElement("table");
+        const tBody = table.createTBody();
+  
+        createTableHead(table);
+        createWeekdaysRow(tBody);
+        createDaysRows(tBody);
+
+        document.body.append(table);
+      }
+
+      function createTableHead(table) {
+        const tHead = table.createTHead();
+        const firstRow = tHead.insertRow();
+        const prevYear = firstRow.insertCell();
+        prevYear.innerHTML ="<<";
+        const prevMonth = firstRow.insertCell();
+        prevMonth.innerHTML ="<";
+        const thMonth = firstRow.insertCell();
+        thMonth.colSpan = 2;
+        thMonth.innerHTML = nameOfMonth;
+        firstRow.insertCell().innerHTML = year;
+        const nextMonth = firstRow.insertCell();
+        nextMonth.innerHTML =">";
+        const nextYear = firstRow.insertCell();
+        nextYear.innerHTML =">>";
+      }
+
+      function nextYear() {
+        
+      }
+
+      function createWeekdaysRow(tBody) {
+        const weekDaysRow = tBody.insertRow();
+        weekDaysRow.classList.toggle("tb-weekdays");
+        for (let i = 1; i < 7; i++) {
+            weekDaysRow.insertCell().innerText = WEEKDAYS[i];
+        }
+        weekDaysRow.insertCell().innerText = WEEKDAYS[0];
+      }
+
+      function createDaysRows(tBody) {
+        let row = tBody.insertRow();
+        let count = 7;
+        if (prevMonthDayOfWeek > 0) {
+            while (prevMonthDayOfWeek > 0) {
+                let cell = row.insertCell();
+                cell.innerText = prevMonthDays - --prevMonthDayOfWeek;
+                cell.classList.toggle("not-current");
+                count--;
+            }
+        }
+        for (let i = 1; i <= monthDays; i++) {
+            if(count === 0) {
+                row = tBody.insertRow();
+                count = 7;
+            }
+            row.insertCell().innerText = i;
+            count--;
+        }
+        if (count > 0) {
+            for (let i = 1; count > 0; i++) {
+                let cell = row.insertCell();
+                cell.innerText = i;
+                cell.classList.toggle("not-current");
+                count--;
+            }
+        }
+        addWeekEndsStyle(tBody);
+      }
+
+      function addWeekEndsStyle(tBody) {
+        const elements = tBody.querySelectorAll("tr > td:last-child");
+        for (let element of elements) {
+            element.classList.toggle("weekends");
+            element.previousElementSibling.classList.toggle("weekends");
+        }
+      }
+
+    </script>
+  </body>
+</html>
