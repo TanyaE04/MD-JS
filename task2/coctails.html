@@ -111,14 +111,14 @@
     //верстка
     function createHTMLElement(elName, str, className = "") {
       let element = document.createElement(elName);
-      element.className = className;
+      element.classList.toggle(className);
       element.append(str);
       document.body.append(element);
     }
 
     function createHTMLList(arr, className = "") {
       let ul = document.createElement("ul");
-      ul.className = className;
+      ul.classList.toggle(className);
       for (item of arr) {
         let li = document.createElement("li");
         li.append(item);
