@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Editable list</title>
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+
+  <body>
+    
+    <script>
+
+        createList (["первый", "второй", "третий", "четвертый", "пятый"]);
+        buldListHandling();
+
+        function createList(arr) {
+            const list = document.createElement("ol");
+            for (let item of arr) {
+            const li = document.createElement("li");
+            li.append(item);
+            ol.append(li);
+            }
+            document.body.append(list);
+        }
+
+        function buldListHandling() {
+            const input = document.createElement("input");
+            input.setAttribute("type", "text");
+
+            const btnAdd = document.createElement("button");
+            btnAdd.setAttribute("type", "button");
+            
+            const btnRemove = document.createElement("button");
+            btnRemove.setAttribute("type", "button");
+
+            document.body.append(input);
+            document.body.append(btnAdd);
+            document.body.append(btnRemove);
+
+        }
+    </script>
+  </body>
+</html>
