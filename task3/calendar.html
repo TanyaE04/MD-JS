@@ -7,12 +7,9 @@
     <link rel="stylesheet" href="../css/style.css" />
   </head>
 
-  <body style="background-image: none; background-color: bisque;">
-    <div>
-    </div>
+  <body style="background-image: none; background-color: bisque">
 
     <script>
-      
       const WEEKDAYS = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
       const MONTHS = [
         "Январь",
@@ -29,14 +26,28 @@
         "Декабрь",
       ];
 
-      let dateStr = prompt("Введите номер месяца и год (мм ГГГГ)");
-      let nameOfMonth = null;
-      let year = null;
-      let monthDays = null;
-      let prevMonthDayOfWeek = null;
+      class CurrentDate {
+        constructor(currentMonth, currentYear) {
+          this.month = currentMonth;
+          this.year = currentYear;
+        }
+        getNameOfMonth() {
+          return MONTHS[this.month];
+        }
+        getMonthDays() {
+          return new Date(this.year, this.month + 1, 0).getDate();
+        }
+        getPrevMonthDays() {
+          return new Date(this.year, this.month, 0).getDate();
+        }
+        getPrevMonthDayOfWeek() {
+          return new Date(this.year, this.month, 0).getDay();
+        }
+      }
 
-      fromStrToDate(dateStr);
-      createCalendarHTML();
+      let dateStr = prompt("Введите номер месяца и год (мм ГГГГ)");
+
+      createCalendarHTML(fromStrToDate(dateStr));
 
       function fromStrToDate(dateStr) {
         let month = null;
@@ -50,10 +61,7 @@
           year = nowDate.getFullYear();
           month = nowDate.getMonth();
         }
-        nameOfMonth = MONTHS[month];
-        monthDays = new Date(year, month + 1, 0).getDate();
-        prevMonthDayOfWeek = new Date(year, month, 0).getDay();
-        prevMonthDays = new Date(year, month, 0).getDate();
+        return new CurrentDate(month, year);
       }
 
       function isDateStr(dateStr) {
@@ -64,73 +72,93 @@
         } else return false;
       }
 
-      function createCalendarHTML() {
+      function createCalendarHTML(currentDate) {
         const table = document.createElement("table");
         const tBody = table.createTBody();
-  
-        createTableHead(table);
-        createWeekdaysRow(tBody);
-        createDaysRows(tBody);
+
+        createTableHead(currentDate, table);
+        createWeekdaysRow(currentDate, tBody);
+        createDaysRows(currentDate, tBody);
 
         document.body.append(table);
       }
 
-      function createTableHead(table) {
+      function createTableHead(currentDate, table) {
         const tHead = table.createTHead();
         const firstRow = tHead.insertRow();
         const prevYear = firstRow.insertCell();
-        prevYear.innerHTML ="<<";
+        prevYear.innerHTML = "<<";
+        addNewCalendarHandler(prevYear, currentDate.month, currentDate.year - 1);
         const prevMonth = firstRow.insertCell();
-        prevMonth.innerHTML ="<";
+        prevMonth.innerHTML = "<";
+        addNewCalendarHandler(prevMonth, currentDate.month - 1, currentDate.year);
         const thMonth = firstRow.insertCell();
         thMonth.colSpan = 2;
-        thMonth.innerHTML = nameOfMonth;
-        firstRow.insertCell().innerHTML = year;
+        thMonth.innerHTML = currentDate.getNameOfMonth();
+        firstRow.insertCell().innerHTML = currentDate.year;
         const nextMonth = firstRow.insertCell();
-        nextMonth.innerHTML =">";
+        nextMonth.innerHTML = ">";
+        addNewCalendarHandler(nextMonth, currentDate.month + 1, currentDate.year);
         const nextYear = firstRow.insertCell();
-        nextYear.innerHTML =">>";
+        nextYear.innerHTML = ">>";
+        addNewCalendarHandler(nextYear, currentDate.month, currentDate.year + 1);
       }
 
-      function nextYear() {
-        
+      function addNewCalendarHandler(element, newMonth, newYear) {
+        const table = document.querySelector("table");
+        if (table != null) {
+          table.remove();
+        }
+        if (newMonth < 0) {
+          newMonth += 12;
+          newYear -= 1;
+        }
+        if (newMonth > 11) {
+          newMonth -= 12;
+          newYear += 1;
+        }
+        element.onclick = function () {
+          createCalendarHTML(new CurrentDate(newMonth, newYear));
+        }
       }
 
-      function createWeekdaysRow(tBody) {
+      function createWeekdaysRow(currentDate, tBody) {
         const weekDaysRow = tBody.insertRow();
         weekDaysRow.classList.toggle("tb-weekdays");
         for (let i = 1; i < 7; i++) {
-            weekDaysRow.insertCell().innerText = WEEKDAYS[i];
+          weekDaysRow.insertCell().innerText = WEEKDAYS[i];
         }
         weekDaysRow.insertCell().innerText = WEEKDAYS[0];
       }
 
-      function createDaysRows(tBody) {
+      function createDaysRows(currentDate, tBody) {
         let row = tBody.insertRow();
         let count = 7;
+        let prevMonthDayOfWeek = currentDate.getPrevMonthDayOfWeek();
         if (prevMonthDayOfWeek > 0) {
-            while (prevMonthDayOfWeek > 0) {
-                let cell = row.insertCell();
-                cell.innerText = prevMonthDays - --prevMonthDayOfWeek;
-                cell.classList.toggle("not-current");
-                count--;
-            }
-        }
-        for (let i = 1; i <= monthDays; i++) {
-            if(count === 0) {
-                row = tBody.insertRow();
-                count = 7;
-            }
-            row.insertCell().innerText = i;
+          while (prevMonthDayOfWeek > 0) {
+            let cell = row.insertCell();
+            cell.innerText =
+              currentDate.getPrevMonthDays() - --prevMonthDayOfWeek;
+            cell.classList.toggle("not-current");
             count--;
+          }
+        }
+        for (let i = 1; i <= currentDate.getMonthDays(); i++) {
+          if (count === 0) {
+            row = tBody.insertRow();
+            count = 7;
+          }
+          row.insertCell().innerText = i;
+          count--;
         }
         if (count > 0) {
-            for (let i = 1; count > 0; i++) {
-                let cell = row.insertCell();
-                cell.innerText = i;
-                cell.classList.toggle("not-current");
-                count--;
-            }
+          for (let i = 1; count > 0; i++) {
+            let cell = row.insertCell();
+            cell.innerText = i;
+            cell.classList.toggle("not-current");
+            count--;
+          }
         }
         addWeekEndsStyle(tBody);
       }
@@ -138,11 +166,10 @@
       function addWeekEndsStyle(tBody) {
         const elements = tBody.querySelectorAll("tr > td:last-child");
         for (let element of elements) {
-            element.classList.toggle("weekends");
-            element.previousElementSibling.classList.toggle("weekends");
+          element.classList.toggle("weekends");
+          element.previousElementSibling.classList.toggle("weekends");
         }
       }
-
     </script>
   </body>
 </html>
