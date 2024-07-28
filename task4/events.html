@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Events</title>
+    <link rel="stylesheet" href="../css/style-task4.css" />
+    
+  </head>
+
+  <body>
+    <h2>Subtask #1</h2>
+    <div class="links">
+        <a href="https://learn.javascript.ru" title="Современный учебник JavaScript">Здесь можно почитать про JavaScript</a><br>
+        <a href="https://doka.guide/js/closures/" title="Дока">И здесь тоже</a><br>
+        <a href="https://open-source-peace.github.io/w3schoolsrus/html/index.html#gsc.tab=0" title="HTML Учебник">А здесь полезная инфа по верстке</a><br>
+    </div>
+    
+    <h2>Subtask #2</h2>
+    <div class="inputs">
+        <input type="text" id="one">
+        <input type="text" id="two">
+        <input type="text" id="three">
+    </div>
+
+    <h2>Subtask #3</h2>
+    <div class="paragraphs">
+        <p>2</p>
+        <p>15</p>
+        <p>35</p>
+    </div>
+
+    <h2>Subtask #4</h2>
+    <div class="inputs-with-border">
+        <input type="text" data-length="5" placeholder="5 символов">
+        <input type="text" data-length="10" placeholder="10 символов">
+        <input type="text" data-length="15" placeholder="15 символов">
+    </div>
+
+    <script>
+
+        const links = document.querySelector(".links");
+        links.addEventListener("mouseover", linkHandler);
+
+        function linkHandler(event) {
+            if (event.target.className === "links") return;
+            event.target.innerText = `${event.target.title} (${event.target.href})`;
+            event.target.classList.add("links");
+        }
+
+        const inputs = document.querySelector(".inputs");
+        inputs.addEventListener("focusout", inputHandler);
+
+        function inputHandler(event) {
+            if (event.target.className === "inputs") return;
+            console.log(event.target.value);
+            event.target.classList.add("inputs");
+        }
+
+        const paragraphs = document.querySelector(".paragraphs");
+        paragraphs.addEventListener("click", paragraphHandler);
+
+        function paragraphHandler(event) {
+            if (event.target.className === "paragraphs") return;
+            event.target.innerText *= +event.target.innerText;
+            event.target.classList.add("paragraphs");
+        }
+
+        const borderedInputs = document.querySelector(".inputs-with-border");
+        borderedInputs.addEventListener("focusout", borderInputHandler);
+
+        function borderInputHandler(event) {
+            if (event.target.className === "inputs-with-border") return;
+            event.target.classList.remove("green-border", "red-border");
+            if (event.target.value.length == event.target.dataset.length) {
+                event.target.classList.toggle("green-border");
+            } else {
+                event.target.classList.toggle("red-border");
+            }
+        }
+
+    </script>
+  </body>
+</html>

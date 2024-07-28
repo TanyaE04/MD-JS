@@ -1,0 +1,12 @@
+div {
+    margin: 15px;
+    padding: 15px;
+}
+
+.red-border {
+    border: solid red;
+}
+
+.green-border {
+    border: solid green;
+}
