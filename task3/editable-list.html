@@ -4,41 +4,91 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Editable list</title>
-    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/style-task14.css" />
   </head>
 
   <body>
-    
     <script>
+      createList(["первый", "второй", "третий", "четвертый", "пятый"]);
+      buldListHandling();
 
-        createList (["первый", "второй", "третий", "четвертый", "пятый"]);
-        buldListHandling();
+      function createList(arr) {
+        const list = document.createElement("ol");
+        list.addEventListener("click", olHandler);
+        for (let item of arr) {
+          const li = document.createElement("li");
+          li.append(item);
+          list.append(li);
+        }
+        document.body.append(list);
+      }
 
-        function createList(arr) {
-            const list = document.createElement("ol");
-            for (let item of arr) {
+      function olHandler(event) {
+        let li = event.target;
+        const value = li.innerText;
+        const input = createHTMLElement("input", {"value": value});
+        input.focus();
+        li.innerText = "";
+        li.append(input);
+        input.onblur = function () {
+          li.innerText = input.value || value;
+        };
+      }
+
+      function buldListHandling() {
+        const list = document.querySelector("ol");
+
+        const input = createHTMLElement("input", {placeholder: "Введите значение"});
+        input.focus();
+
+        btnAttributes = {
+          type: "button",
+          className: "btn",
+          innerText: "Add"
+        }
+        const btnAdd = createHTMLElement("button",  btnAttributes);
+        btnAdd.onclick = function () {
+          if (input.value) {
             const li = document.createElement("li");
-            li.append(item);
-            ol.append(li);
-            }
-            document.body.append(list);
+            li.innerText = input.value;
+            list.append(li);
+            input.value = "";
+            btnRemove.disabled = false;
+          }
+          input.focus();
+        };
+
+        btnAttributes.innerText = "Remove";
+        const btnRemove = createHTMLElement("button", btnAttributes);
+        btnRemove.onclick = function () {
+          let items = list.children;
+          if (items.length > 1) {
+            list.lastChild.remove();
+          } else {
+            list.lastChild.remove();
+            btnRemove.disabled = true;
+          }
+        };
+
+        document.body.append(input);
+        document.body.append(btnAdd);
+        document.body.append(btnRemove);
+      }
+
+      function createHTMLElement(elName, attributes) {
+        const element = document.createElement(elName);
+        for (let key in attributes) {
+          if (key === "innerText") {
+            element[key] = attributes[key];
+          } else if (key === "className") {
+            element.classList.toggle(attributes[key]);
+          } else {
+            element.setAttribute(key, attributes[key]);
+          }
         }
+        return element;
+      }
 
-        function buldListHandling() {
-            const input = document.createElement("input");
-            input.setAttribute("type", "text");
-
-            const btnAdd = document.createElement("button");
-            btnAdd.setAttribute("type", "button");
-            
-            const btnRemove = document.createElement("button");
-            btnRemove.setAttribute("type", "button");
-
-            document.body.append(input);
-            document.body.append(btnAdd);
-            document.body.append(btnRemove);
-
-        }
     </script>
   </body>
 </html>
