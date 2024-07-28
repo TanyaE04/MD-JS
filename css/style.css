@@ -271,7 +271,7 @@ thead > tr {
 th {
   padding: 15px
 }
-tbody{
+tbody {
   background: lightgrey;
 }
 td {
@@ -281,13 +281,15 @@ td {
 .tb-weekdays {
   background: #8fcbddb9;
 }
-.tb-weekdays td {
-  padding: 15px
-}
+
 .weekends {
   background: #0ca6d54f;
 }
 .not-current {
   background: whitesmoke;
   color: grey;
+}
+
+.pointed-day {
+  background: #97efad;
 }

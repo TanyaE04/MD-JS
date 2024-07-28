@@ -8,7 +8,6 @@
   </head>
 
   <body style="background-image: none; background-color: bisque">
-
     <script>
       const WEEKDAYS = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
       const MONTHS = [
@@ -75,9 +74,14 @@
       function createCalendarHTML(currentDate) {
         const table = document.createElement("table");
         const tBody = table.createTBody();
+        tBody.onclick = function (event) {
+          const selected = document.querySelector("td[class~='pointed-day']");
+          if (selected != null) selected.classList.remove("pointed-day");
+          event.target.classList.toggle("pointed-day");
+        }
 
-        createTableHead(currentDate, table);
-        createWeekdaysRow(currentDate, tBody);
+        const tHead = createTableHead(currentDate, table);
+        createWeekdaysRow(currentDate, tHead);
         createDaysRows(currentDate, tBody);
 
         document.body.append(table);
@@ -88,20 +92,37 @@
         const firstRow = tHead.insertRow();
         const prevYear = firstRow.insertCell();
         prevYear.innerHTML = "<<";
-        addNewCalendarHandler(prevYear, currentDate.month, currentDate.year - 1);
+        addNewCalendarHandler(
+          prevYear,
+          currentDate.month,
+          currentDate.year - 1
+        );
         const prevMonth = firstRow.insertCell();
         prevMonth.innerHTML = "<";
-        addNewCalendarHandler(prevMonth, currentDate.month - 1, currentDate.year);
+        addNewCalendarHandler(
+          prevMonth,
+          currentDate.month - 1,
+          currentDate.year
+        );
         const thMonth = firstRow.insertCell();
         thMonth.colSpan = 2;
         thMonth.innerHTML = currentDate.getNameOfMonth();
         firstRow.insertCell().innerHTML = currentDate.year;
         const nextMonth = firstRow.insertCell();
         nextMonth.innerHTML = ">";
-        addNewCalendarHandler(nextMonth, currentDate.month + 1, currentDate.year);
+        addNewCalendarHandler(
+          nextMonth,
+          currentDate.month + 1,
+          currentDate.year
+        );
         const nextYear = firstRow.insertCell();
         nextYear.innerHTML = ">>";
-        addNewCalendarHandler(nextYear, currentDate.month, currentDate.year + 1);
+        addNewCalendarHandler(
+          nextYear,
+          currentDate.month,
+          currentDate.year + 1
+        );
+        return tHead;
       }
 
       function addNewCalendarHandler(element, newMonth, newYear) {
@@ -119,11 +140,11 @@
         }
         element.onclick = function () {
           createCalendarHTML(new CurrentDate(newMonth, newYear));
-        }
+        };
       }
 
-      function createWeekdaysRow(currentDate, tBody) {
-        const weekDaysRow = tBody.insertRow();
+      function createWeekdaysRow(currentDate, tHead) {
+        const weekDaysRow = tHead.insertRow();
         weekDaysRow.classList.toggle("tb-weekdays");
         for (let i = 1; i < 7; i++) {
           weekDaysRow.insertCell().innerText = WEEKDAYS[i];
@@ -150,6 +171,7 @@
             count = 7;
           }
           row.insertCell().innerText = i;
+          if (i === getToday()) row.lastChild.classList.toggle("pointed-day");
           count--;
         }
         if (count > 0) {
@@ -161,6 +183,11 @@
           }
         }
         addWeekEndsStyle(tBody);
+      }
+
+      function getToday() {
+        const now = new Date();
+        return now.getDate();
       }
 
       function addWeekEndsStyle(tBody) {
