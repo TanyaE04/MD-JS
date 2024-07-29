@@ -7,6 +7,27 @@ div {
     border: solid red;
 }
 
-.green-border {
+.green-border, .right li {
     border: solid green;
+}
+
+ul {
+    width: 50%;
+    border: grey;
+    background-color: azure;
+    padding: 30px;
+    list-style-type: none;
+    text-align: center;
+}
+
+li {
+    border: solid lightgrey;
+    border-radius: 10px;
+    margin: 15px;
+    padding: 15px;
+    font-size: large;
+}
+
+.selected {
+    background-color: lightgrey;
 }

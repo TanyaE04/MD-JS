@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sortable list</title>
+    <link rel="stylesheet" href="../css/style-task4.css" />
+  </head>
+
+  <body>
+    <script>
+      const RAINBOW = [
+        "Red",
+        "Orange",
+        "Yellow",
+        "Green",
+        "Blue",
+        "Indigo",
+        "Violet",
+      ];
+
+      createList();
+
+      function createList() {
+        const list = document.createElement("ul");
+        let shuffledArr = [].concat(RAINBOW);
+        shuffle(shuffledArr);
+        for (let color of shuffledArr) {
+          const li = document.createElement("li");
+          li.dataset.order = li.innerText = li.style.backgroundColor = color;
+          li.draggable = true;
+          list.append(li);
+        }
+        document.body.append(list);
+      }
+
+      function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          let j = Math.floor(Math.random() * (i + 1));
+          let temp = array[i];
+          array[i] = array[j];
+          array[j] = temp;
+        }
+      }
+
+      class DragAndDropHandler {
+        handleEvent(event) {
+            let method = 'on' + event.type[0].toUpperCase() + event.type.slice(1);
+            this[method](event);
+        }
+        onDragstart() {
+            event.target.classList.add("selected");
+        }
+        onDragend() {
+            event.target.classList.remove("selected");
+        }
+        onDragover() {
+            event.preventDefault();
+        }
+        onDrop() {
+            event.preventDefault();
+            const list = document.querySelector("ul");
+            const active = document.querySelector(".selected");
+            if (active === event.target || event.target === list) return;
+            event.target.before(active);
+            if (checkOrder(list)) list.classList.add("right");
+        }
+      }
+
+      addHandlers();
+
+      function addHandlers() {
+        const list = document.querySelector("ul");
+        const handler = new DragAndDropHandler();
+        list.addEventListener("dragstart", handler);
+        list.addEventListener("dragend", handler);
+        list.addEventListener("dragover", handler);
+        list.addEventListener("drop", handler);
+      }
+
+      function checkOrder(list) {
+        for (let i = 0; i < list.children.length; i++) {
+            if (list.children[i].dataset.order != RAINBOW[i]) {
+                return false;
+            }
+        }
+        return true;
+      }
+      
+    </script>
+  </body>
+</html>
