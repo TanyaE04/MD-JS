@@ -290,6 +290,6 @@ td {
   color: grey;
 }
 
-.pointed-day {
+.pointed-day, .mouseover-pointed {
   background: #97efad;
 }
