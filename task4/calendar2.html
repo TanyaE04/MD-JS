@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calendar</title>
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+
+  <body style="background-image: none; background-color: bisque">
+    <header>
+        <label for="month-select">Месяц</label>
+        <select name="month" id="month-select"></select>
+        <label for="year-select">Год</label>
+        <select name="year" id="year-select"></select>
+        <button class="createBtn" type="button" disabled="true">Создать</button>
+        <button class="removeBtn" type="button" disabled="true">Удалить</button>
+    </header>
+    <script>
+      const WEEKDAYS = ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"];
+      const MONTHS = [
+        "Январь",
+        "Февраль",
+        "Март",
+        "Апрель",
+        "Май",
+        "Июнь",
+        "Июль",
+        "Август",
+        "Сентябрь",
+        "Октябрь",
+        "Ноябрь",
+        "Декабрь",
+      ];
+
+      let years = ["Выбрать год"];
+       for (let i = 1980; i < 2026; i++) {
+        years.push(i);
+       }
+
+      class CurrentDate {
+        constructor(currentMonth, currentYear) {
+          this.month = currentMonth;
+          this.year = currentYear;
+        }
+        getNameOfMonth() {
+          return MONTHS[this.month];
+        }
+        getMonthDays() {
+          return new Date(this.year, this.month + 1, 0).getDate();
+        }
+        getPrevMonthDays() {
+          return new Date(this.year, this.month, 0).getDate();
+        }
+        getPrevMonthDayOfWeek() {
+          return new Date(this.year, this.month, 0).getDay();
+        }
+      }
+
+      createSelects();
+
+      function createSelects () {
+        const monthSel = document.getElementById("month-select");
+        let op = document.createElement("option");
+        op.innerText = "Выбрать месяц";
+        monthSel.append(op);
+        for (let month of MONTHS) {
+            op = document.createElement("option");
+            op.innerText = month;
+            monthSel.append(op);
+        }
+
+        const yearSel = document.getElementById("year-select");
+        for (let year of years) {
+            op = document.createElement("option");
+            op.innerText = year;
+            yearSel.append(op);
+        }
+
+        const header = document.querySelector("header");
+        header.onclick = function () {
+            if (monthSel.value != "Выбрать месяц" && yearSel.value != years[0]) {
+                const createBtn = document.querySelector(".createBtn");
+                createBtn.disabled = false;
+                createBtn.onclick = function () {
+                    createCalendarHTML(new CurrentDate(MONTHS.indexOf(monthSel.value), yearSel.value));
+                }
+            }
+            const removeBtn = document.querySelector(".removeBtn");
+            if (document.querySelector("table") != null) {
+                removeBtn.disabled = false;
+                removeBtn.onclick = function () {
+                    document.querySelector("table").remove();
+                    if (document.querySelector("table") === null) {
+                        removeBtn.disabled = true;
+                    }
+                }
+            }
+        }
+      }
+
+    
+      function createCalendarHTML(currentDate) {
+        const table = document.createElement("table");
+        const tBody = table.createTBody();
+        //tBody.addEventListener("mouseover", pointeddayHandler);
+        tBody.addEventListener("click", pointedDayHandler);
+        // tBody.onclick = function (event) {
+        //   const selected = document.querySelector("td[class~='pointed-day']");
+        //   if (selected != null) selected.classList.remove("pointed-day");
+        //   event.target.classList.toggle("pointed-day");
+        // }
+
+        const tHead = createTableHead(currentDate, table);
+        createWeekdaysRow(currentDate, tHead);
+        createDaysRows(currentDate, tBody);
+
+        document.body.append(table);
+      }
+
+      function pointedDayHandler(event) {
+        const selected = event.target.closest("table").querySelector("td[class~='pointed-day']");
+          if (selected != null) selected.classList.remove("pointed-day");
+          event.target.classList.toggle("pointed-day");
+      }
+
+      function createTableHead(currentDate, table) {
+        const tHead = table.createTHead();
+        const firstRow = tHead.insertRow();
+        const prevYear = firstRow.insertCell();
+        prevYear.innerHTML = "<<";
+        addNewCalendarHandler(
+          prevYear,
+          currentDate.month,
+          currentDate.year - 1
+        );
+        const prevMonth = firstRow.insertCell();
+        prevMonth.innerHTML = "<";
+        addNewCalendarHandler(
+          prevMonth,
+          currentDate.month - 1,
+          currentDate.year
+        );
+        const thMonth = firstRow.insertCell();
+        thMonth.colSpan = 2;
+        thMonth.innerHTML = currentDate.getNameOfMonth();
+        firstRow.insertCell().innerHTML = currentDate.year;
+        const nextMonth = firstRow.insertCell();
+        nextMonth.innerHTML = ">";
+        addNewCalendarHandler(
+          nextMonth,
+          currentDate.month + 1,
+          currentDate.year
+        );
+        const nextYear = firstRow.insertCell();
+        nextYear.innerHTML = ">>";
+        addNewCalendarHandler(
+          nextYear,
+          currentDate.month,
+          currentDate.year + 1
+        );
+        return tHead;
+      }
+
+      function addNewCalendarHandler(element, newMonth, newYear) {
+        // const table = document.querySelector("table");
+        // if (table != null) {
+        //   table.remove();
+        // }
+        if (newMonth < 0) {
+          newMonth += 12;
+          newYear -= 1;
+        }
+        if (newMonth > 11) {
+          newMonth -= 12;
+          newYear += 1;
+        }
+        element.onclick = function () {
+          createCalendarHTML(new CurrentDate(newMonth, newYear));
+        };
+      }
+
+      function createWeekdaysRow(currentDate, tHead) {
+        const weekDaysRow = tHead.insertRow();
+        weekDaysRow.classList.toggle("tb-weekdays");
+        for (let i = 1; i < 7; i++) {
+          weekDaysRow.insertCell().innerText = WEEKDAYS[i];
+        }
+        weekDaysRow.insertCell().innerText = WEEKDAYS[0];
+      }
+
+      function createDaysRows(currentDate, tBody) {
+        let row = tBody.insertRow();
+        let count = 7;
+        let prevMonthDayOfWeek = currentDate.getPrevMonthDayOfWeek();
+        if (prevMonthDayOfWeek > 0) {
+          while (prevMonthDayOfWeek > 0) {
+            let cell = row.insertCell();
+            cell.innerText =
+              currentDate.getPrevMonthDays() - --prevMonthDayOfWeek;
+            cell.classList.toggle("not-current");
+            count--;
+          }
+        }
+        for (let i = 1; i <= currentDate.getMonthDays(); i++) {
+          if (count === 0) {
+            row = tBody.insertRow();
+            count = 7;
+          }
+          row.insertCell().innerText = i;
+          //if (i === getToday()) row.lastElementChild.classList.toggle("pointed-day");
+          count--;
+        }
+        if (count > 0) {
+          for (let i = 1; count > 0; i++) {
+            let cell = row.insertCell();
+            cell.innerText = i;
+            cell.classList.toggle("not-current");
+            count--;
+          }
+        }
+        addWeekEndsStyle(tBody);
+      }
+
+    //   function getToday() {
+    //     const now = new Date();
+    //     return now.getDate();
+    //   }
+
+      function addWeekEndsStyle(tBody) {
+        const elements = tBody.querySelectorAll("tr > td:last-child");
+        for (let element of elements) {
+          element.classList.toggle("weekends");
+          element.previousElementSibling.classList.toggle("weekends");
+        }
+      }
+    </script>
+  </body>
+</html>
