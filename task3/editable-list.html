@@ -24,14 +24,16 @@
       }
 
       function olHandler(event) {
+        if (event.target === "ol") return;
         let li = event.target;
         const value = li.innerText;
         const input = createHTMLElement("input", {"value": value});
-        input.focus();
         li.innerText = "";
         li.append(input);
+        input.focus();
         input.onblur = function () {
           li.innerText = input.value || value;
+          input.remove();
         };
       }
 
