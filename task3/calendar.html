@@ -52,7 +52,7 @@
         let month = null;
         if (isDateStr(dateStr)) {
           let arr = dateStr.split(" ");
-          year = arr[1];
+          year = +arr[1];
           month = arr[0] - 1;
         } else {
           alert("Неверно введена дата");
@@ -156,6 +156,7 @@
         let row = tBody.insertRow();
         let count = 7;
         let prevMonthDayOfWeek = currentDate.getPrevMonthDayOfWeek();
+        let isToday = getToday(currentDate);
         if (prevMonthDayOfWeek > 0) {
           while (prevMonthDayOfWeek > 0) {
             let cell = row.insertCell();
@@ -171,7 +172,7 @@
             count = 7;
           }
           row.insertCell().innerText = i;
-          if (i === getToday()) row.lastElementChild.classList.toggle("pointed-day");
+          if (i === isToday) row.lastElementChild.classList.toggle("pointed-day");
           count--;
         }
         if (count > 0) {
@@ -185,9 +186,10 @@
         addWeekEndsStyle(tBody);
       }
 
-      function getToday() {
+      function getToday(currentDate) {
         const now = new Date();
-        return now.getDate();
+        console.log(currentDate);
+        return currentDate.year === now.getFullYear() && currentDate.month === now.getMonth() && now.getDate();
       }
 
       function addWeekEndsStyle(tBody) {
