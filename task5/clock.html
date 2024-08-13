@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clock</title>
+  </head>
+  <style>
+    text {
+      text-anchor: middle;
+      dominant-baseline: middle;
+      font-size: 32px;
+      fill: black;
+    }
+  </style>
+  <body>
+    <svg id="svg-clock" width="600" height="600">
+      <defs>
+        <radialGradient id="Gradient">
+          <stop offset="0" stop-opacity="0.98047" stop-color="#c2c2ed" />
+          <stop offset="0" stop-opacity="0.99219" stop-color="#fcfcff" />
+          <stop offset="1" stop-opacity="0.98047" stop-color="#06063d" />
+          <stop offset="1" stop-opacity="0.99609" stop-color="#000000" />
+        </radialGradient>
+        <filter id="blur">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
+        </filter>
+      </defs>
+    </svg>
+
+    <script>
+      const svg = document.getElementById("svg-clock");
+      const width = parseFloat(svg.getAttribute("width"));
+      const height = parseFloat(svg.getAttribute("height"));
+      const svgNS = "http://www.w3.org/2000/svg";
+      const indent = 70;
+      const strokeWidth = 3;
+
+      const centerX = width / 2;
+      const centerY = height / 2;
+
+      const hands = {
+          hourHand: document.createElementNS(svgNS, "line"),
+          minuteHand: document.createElementNS(svgNS, "line"),
+          secondHand: document.createElementNS(svgNS, "line")
+      };
+
+      function drawSVGClock() {
+        const clockRadius = width > height ? centerY : centerX;
+
+        //base
+        const clock = document.createElementNS(svgNS, "circle");
+        clock.setAttributeNS(null, "cx", centerX);
+        clock.setAttributeNS(null, "cy", centerY);
+        clock.setAttributeNS(null, "r", clockRadius);
+        clock.setAttributeNS(null, "fill", "url(#Gradient)");
+        svg.append(clock);
+
+        //dial
+        const dialGroup = document.createElementNS(svgNS, "g");
+        dialGroup.setAttributeNS(null, "fill", "white");
+
+        let radians = 0;
+        const radius = (clockRadius - indent) / 5;
+        const dest = clockRadius - indent;
+
+        for (let i = 0; i < 12; i++) {
+          let circle = document.createElementNS(svgNS, "circle");
+          circle.setAttributeNS(null, "cx", centerX + dest * Math.sin(radians));
+          circle.setAttributeNS(null, "cy", centerY - dest * Math.cos(radians));
+          circle.setAttributeNS(null, "r", radius);
+          circle.setAttributeNS(null, "fill", "#c9abea");
+          circle.setAttributeNS(null, "filter", "url(#blur)");
+          radians += Math.PI / 6;
+          dialGroup.append(circle);
+
+          const text = document.createElementNS(svgNS, "text");
+          text.setAttributeNS(null, "x", circle.getAttributeNS(null, "cx"));
+          text.setAttributeNS(null, "y", circle.getAttributeNS(null, "cy"));
+          text.innerHTML = i === 0 ? 12 : i;
+          dialGroup.append(text);
+        }
+        svg.append(dialGroup);
+
+        //hands
+        for (let key in hands) {
+          hands[key].setAttributeNS(null, "id", key);
+          hands[key].setAttributeNS(null, "x1", centerX);
+          hands[key].setAttributeNS(null, "y1", centerY);
+          hands[key].setAttributeNS(null, "x2", centerX);
+        }
+        
+        hands.hourHand.setAttributeNS(null, "y2", centerY / 2);
+        hands.hourHand.setAttributeNS(null, "stroke-width", strokeWidth * 3);
+        hands.hourHand.setAttributeNS(null, "stroke", "black");
+
+        hands.minuteHand.setAttributeNS(null, "y2", indent + radius);
+        hands.minuteHand.setAttributeNS(null, "stroke-width", strokeWidth * 2);
+        hands.minuteHand.setAttributeNS(null, "stroke", "black");
+
+        hands.secondHand.setAttributeNS(null, "y2", indent);
+        hands.secondHand.setAttributeNS(null, "stroke-width", strokeWidth);
+        hands.secondHand.setAttributeNS(null, "stroke", "red");
+
+        svg.append(hands.hourHand);
+        svg.append(hands.minuteHand);
+        svg.append(hands.secondHand);
+
+        //tick tack
+        const nowDate = new Date();
+        let startPositionHour = nowDate.getHours() > 12 ? (nowDate.getHours() - 12) * 30 : nowDate.getHours() * 30;
+        hourHand.setAttributeNS(null, "transform", `rotate(${startPositionHour}, ${centerX}, ${centerY})`);
+        let startPositionMinute = nowDate.getMinutes() * 6;
+        minuteHand.setAttributeNS(null, "transform", `rotate(${startPositionMinute}, ${centerX}, ${centerY})`);
+        let startPositionSecond = nowDate.getSeconds() * 6;
+        secondHand.setAttributeNS(null, "transform", `rotate(${startPositionSecond}, ${centerX}, ${centerY})`);
+  
+        const timeId = setInterval(() => {
+          let sec = (new Date() - nowDate) / 1000;
+          let min = 0;
+          let h = 0;
+          if (sec > 60) {
+            min = Math.floor(sec / 60);
+            sec = sec % 60;
+            if (min > 60) {
+              h = Math.floor(min / 60);
+              min = min % 60;
+            }
+          } 
+          tick("secondHand", startPositionSecond + sec * 6);
+          tick("minuteHand", startPositionMinute + min * 6);
+          tick("hourHand", startPositionHour + h * 30);
+        }, 1000);
+      }
+
+      function tick(handName, agle) {
+          hands[handName].setAttributeNS(null, "transform", `rotate(${(agle)}, ${centerX}, ${centerY})`);   
+      }
+
+      drawSVGClock();
+
+    </script>
+  </body>
+</html>
