@@ -113,7 +113,7 @@
         };
       }
 
-      function createCalendarHTML(currentDate) {
+      function createCalendarHTML(currentDate, currentTableEl) {
         const table = document.createElement("table");
         const tBody = table.createTBody();
         tBody.addEventListener("mouseover", pointedDayHandler);
@@ -124,7 +124,7 @@
         createWeekdaysRow(currentDate, tHead);
         createDaysRows(currentDate, tBody);
 
-        document.body.append(table);
+        currentTableEl === undefined ? document.body.append(table) : currentTableEl.replaceWith(table);
       }
 
       function pointedDayHandler(event) {
@@ -153,14 +153,14 @@
         const firstRow = tHead.insertRow();
         const prevYear = firstRow.insertCell();
         prevYear.innerHTML = "<<";
-        addNewCalendarHandler(
+        flipCalendarHandler(
           prevYear,
           currentDate.month,
           currentDate.year - 1
         );
         const prevMonth = firstRow.insertCell();
         prevMonth.innerHTML = "<";
-        addNewCalendarHandler(
+        flipCalendarHandler(
           prevMonth,
           currentDate.month - 1,
           currentDate.year
@@ -171,14 +171,14 @@
         firstRow.insertCell().innerHTML = currentDate.year;
         const nextMonth = firstRow.insertCell();
         nextMonth.innerHTML = ">";
-        addNewCalendarHandler(
+        flipCalendarHandler(
           nextMonth,
           currentDate.month + 1,
           currentDate.year
         );
         const nextYear = firstRow.insertCell();
         nextYear.innerHTML = ">>";
-        addNewCalendarHandler(
+        flipCalendarHandler(
           nextYear,
           currentDate.month,
           currentDate.year + 1
@@ -186,7 +186,7 @@
         return tHead;
       }
 
-      function addNewCalendarHandler(element, newMonth, newYear) {
+      function flipCalendarHandler(element, newMonth, newYear) {
         if (newMonth < 0) {
           newMonth += 12;
           newYear -= 1;
@@ -196,7 +196,7 @@
           newYear += 1;
         }
         element.onclick = function () {
-          createCalendarHTML(new CurrentDate(newMonth, newYear));
+          createCalendarHTML(new CurrentDate(newMonth, newYear), element.closest("table"));
         };
       }
 
