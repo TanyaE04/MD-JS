@@ -45,6 +45,7 @@ input {
 ol {
 	font-size: 20px;
 	counter-reset: myCounter;
+	width: 30%;
 }
   
 li {
