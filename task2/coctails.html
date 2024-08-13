@@ -71,14 +71,7 @@
         return;
       }
 
-      let isAlcStr = null;
-      do {
-        isAlcStr = prompt("Коктейль алкогольный? (да/нет)");
-        if (isAlcStr === null) return;
-      } while (
-        !(isAlcStr.toLowerCase() === "да" || isAlcStr.toLowerCase() === "нет")
-      );
-      let isAlc = isAlcStr.toLowerCase() === "да" ? true : false;
+      let isAlc = confirm("Коктейль алкогольный?");
 
       let ingredientsStr = null;
       do {
@@ -86,7 +79,6 @@
           "Перечислите необходимые ингредиенты и их количество через запятую (Вода 50мл, Сок 20мл...)"
         );
         if (ingredientsStr === null) return;
-        console.log(ingredientsStr.split(",").length);
       } while (ingredientsStr.split(",").length < 2);
       let ingredients = ingredientsStr.split(",");
 
