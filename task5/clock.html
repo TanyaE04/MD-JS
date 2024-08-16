@@ -115,29 +115,27 @@
         svg.append(hands.secondHand);
 
         //tick tack
-        const nowDate = new Date();
-        let startPositionHour = nowDate.getHours() > 12 ? (nowDate.getHours() - 12) * ANGLE_HOUR_STEP : nowDate.getHours() * ANGLE_HOUR_STEP;
-        hourHand.setAttributeNS(null, "transform", `rotate(${startPositionHour}, ${centerX}, ${centerY})`);
-        let startPositionMinute = nowDate.getMinutes() * ANGLE_STEP;
-        minuteHand.setAttributeNS(null, "transform", `rotate(${startPositionMinute}, ${centerX}, ${centerY})`);
-        let startPositionSecond = nowDate.getSeconds() * ANGLE_STEP;
-        secondHand.setAttributeNS(null, "transform", `rotate(${startPositionSecond}, ${centerX}, ${centerY})`);
+        const startDate = new Date();
+        let startHour = startDate.getHours() > 12 ? startDate.getHours() - 12 : startDate.getHours();
+        hourHand.setAttributeNS(null, "transform", `rotate(${startHour * ANGLE_HOUR_STEP}, ${centerX}, ${centerY})`);
+        minuteHand.setAttributeNS(null, "transform", `rotate(${startDate.getMinutes() * ANGLE_STEP}, ${centerX}, ${centerY})`);
+        secondHand.setAttributeNS(null, "transform", `rotate(${startDate.getSeconds() * ANGLE_STEP}, ${centerX}, ${centerY})`);
   
         const timeId = setInterval(() => {
-          let sec = (new Date() - nowDate) / 1000;
-          let min = 0;
-          let h = 0;
+          let sec = startDate.getSeconds() + (new Date() - startDate) / 1000;
+          let min = startDate.getMinutes();
+          let h = startHour;
           if (sec > 60) {
-            min = Math.floor(sec / 60);
+            min += Math.floor(sec / 60);
             sec = sec % 60;
             if (min > 60) {
-              h = Math.floor(min / 60);
+              h += Math.floor(min / 60);
               min = min % 60;
             }
           } 
-          tick(hands.secondHand, startPositionSecond + sec * ANGLE_STEP);
-          tick(hands.minuteHand, startPositionMinute + min * ANGLE_STEP);
-          tick(hands.hourHand, startPositionHour + h * ANGLE_HOUR_STEP);
+          tick(hands.secondHand, sec * ANGLE_STEP);
+          tick(hands.minuteHand, min * ANGLE_STEP);
+          tick(hands.hourHand, h * ANGLE_HOUR_STEP);
         }, 1000);
       }
 
