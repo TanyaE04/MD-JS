@@ -117,9 +117,6 @@
         //tick tack
         const startDate = new Date();
         let startHour = startDate.getHours() > 12 ? startDate.getHours() - 12 : startDate.getHours();
-        hourHand.setAttributeNS(null, "transform", `rotate(${startHour * ANGLE_HOUR_STEP}, ${centerX}, ${centerY})`);
-        minuteHand.setAttributeNS(null, "transform", `rotate(${startDate.getMinutes() * ANGLE_STEP}, ${centerX}, ${centerY})`);
-        secondHand.setAttributeNS(null, "transform", `rotate(${startDate.getSeconds() * ANGLE_STEP}, ${centerX}, ${centerY})`);
   
         const timeId = setInterval(() => {
           let sec = startDate.getSeconds() + (new Date() - startDate) / 1000;
@@ -131,6 +128,7 @@
             if (min > 60) {
               h += Math.floor(min / 60);
               min = min % 60;
+              h > 12 ? h - 12 : h;
             }
           } 
           tick(hands.secondHand, sec * ANGLE_STEP);

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clock-SVG</title>
+  </head>
+  <style>
+
+    text {
+      text-anchor: middle;
+      dominant-baseline: middle;
+      font-size: 32px;
+      fill: black;
+    }
+
+  </style>
+  <body>
+    <svg id="svg-clock" width="600" height="600">
+      <defs>
+        <radialGradient id="Gradient">
+          <stop offset="0" stop-opacity="0.98047" stop-color="#c2c2ed" />
+          <stop offset="0" stop-opacity="0.99219" stop-color="#fcfcff" />
+          <stop offset="1" stop-opacity="0.98047" stop-color="#06063d" />
+          <stop offset="1" stop-opacity="0.99609" stop-color="#000000" />
+        </radialGradient>
+        <filter id="blur">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
+        </filter>
+      </defs>
+    </svg>
+
+    <script src="../js/SVGElements.js"></script>
+    <script>
+      //SVG element where the clock will be placed
+      const svg = document.getElementById("svg-clock");      
+      //indent used for the counting a dial radius and the clock hands length
+      const INDENT = 70;
+      //width of the second hand; it is a base for counting the width of the minute(x2) and hour(x3) hand of the clock
+      const STROKE_WIDTH = 3;
+      //coordinates of the clock center
+      const centerX = parseFloat(svg.getAttribute("width")) / 2;
+      const centerY = parseFloat(svg.getAttribute("height")) / 2;
+      //angle step of the second and minute hands
+      const ANGLE_STEP = 6;
+      //angle step of the hour hand
+      const ANGLE_HOUR_STEP = 30;
+
+      function drawSVGClock() {
+        const clockRadius = centerX > centerY ? centerY : centerX;
+
+        //base
+        const clock = new SVGCircle(centerX, centerY, clockRadius); 
+        clock.addFill("url(#Gradient)");
+        svg.append(clock.getSVGElement());
+
+        //dial
+        const dialGroup = new SVGElement("g");
+        dialGroup.addFill("white");
+
+        let radians = 0;
+        const radius = (clockRadius - INDENT) / 5;
+        const dest = clockRadius - INDENT;
+
+        for (let i = 0; i < 12; i++) {
+          let circle = new SVGCircle(centerX + dest * Math.sin(radians), centerY - dest * Math.cos(radians), radius);
+          circle.addFill("#c9abea");
+          circle.addFilterUrl("url(#blur)");
+          radians += Math.PI / 6;
+          dialGroup.appendSVGElement(circle.getSVGElement());
+
+          const text = new SVGText(circle.getSVGElement().getAttributeNS(null, "cx"), circle.getSVGElement().getAttributeNS(null, "cy"));
+          text.addInnerHTML(i === 0 ? 12 : i);
+          dialGroup.appendSVGElement(text.getSVGElement());
+        }
+        svg.append(dialGroup.getSVGElement());
+
+        //hands
+        const hourHand = new SVGLine(centerX, centerY, centerX, centerY / 2);
+        hourHand.addId("hourHand");
+        hourHand.addStroke("black");
+        hourHand.addStrokeWidth(STROKE_WIDTH * 3);
+
+        const minuteHand = new SVGLine(centerX, centerY, centerX, INDENT + radius);
+        minuteHand.addId("minuteHand");
+        minuteHand.addStroke("black");
+        minuteHand.addStrokeWidth(STROKE_WIDTH * 2);
+
+        const secondHand = new SVGLine(centerX, centerY, centerX, INDENT);
+        secondHand.addId("secondHand");
+        secondHand.addStroke("red");
+        secondHand.addStrokeWidth(STROKE_WIDTH);
+
+        svg.append(hourHand.getSVGElement());
+        svg.append(minuteHand.getSVGElement());
+        svg.append(secondHand.getSVGElement());
+      }
+
+      function tick() {
+        //tick tack
+        const hourHand = document.getElementById("hourHand");
+        const minuteHand = document.getElementById("minuteHand");
+        const secondHand = document.getElementById("secondHand");
+
+        const startDate = new Date();
+        let startHour = startDate.getHours() > 12 ? startDate.getHours() - 12 : startDate.getHours();
+
+        const timeId = setInterval(() => {
+          let sec = startDate.getSeconds() + (new Date() - startDate) / 1000;
+          let min = startDate.getMinutes();
+          let h = startHour;
+          if (sec > 60) {
+            min += Math.floor(sec / 60);
+            sec = sec % 60;
+            if (min > 60) {
+              h += Math.floor(min / 60);
+              min = min % 60;
+            }
+          } 
+          hourHand.setAttributeNS(null, "transform", `rotate(${(h * ANGLE_HOUR_STEP)}, ${centerX}, ${centerY})`); 
+          minuteHand.setAttributeNS(null, "transform", `rotate(${(min * ANGLE_STEP)}, ${centerX}, ${centerY})`); 
+          secondHand.setAttributeNS(null, "transform", `rotate(${(sec * ANGLE_STEP)}, ${centerX}, ${centerY})`); 
+        }, 1000);
+      }
+
+      drawSVGClock();
+      tick();
+
+    </script>
+  </body>
+</html>
