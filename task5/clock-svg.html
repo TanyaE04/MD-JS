@@ -90,23 +90,12 @@
 
         //digital clock
         const digitalClock = new SVGText(centerX, centerY / 1.7);
-        const hours = new SVGElement("tspan");
-        hours.addId("hours");
-        const minutes = new SVGElement("tspan");
-        minutes.addId("minutes");
-        const seconds = new SVGElement("tspan");
-        seconds.addId("seconds");
-        const delimiter = new SVGElement("tspan");
-        delimiter.getSVGElement().innerHTML = " : ";
-        const delimiter2 = new SVGElement("tspan");
-        delimiter2.getSVGElement().innerHTML = " : ";
-
-        digitalClock.appendSVGElement(hours.getSVGElement());
-        digitalClock.appendSVGElement(delimiter.getSVGElement());
-        digitalClock.appendSVGElement(minutes.getSVGElement());
-        digitalClock.appendSVGElement(delimiter2.getSVGElement());
-        digitalClock.appendSVGElement(seconds.getSVGElement());
-
+        digitalClock.appendTSpan("hours");
+        digitalClock.appendTSpan(null, " : ");
+        digitalClock.appendTSpan("minutes");
+        digitalClock.appendTSpan(null, " : ");
+        digitalClock.appendTSpan("seconds");
+      
         clockSVGElements.digitalClock = digitalClock.getSVGElement();
 
         //hands
@@ -177,9 +166,11 @@
               "transform",
               `rotate(${sec * ANGLE_STEP}, ${centerX}, ${centerY})`
             );
-          clockSVGElements.digitalClock.querySelector("#hours").innerHTML = isPM ? h + 12 : h < 10 ? "0" + h : h;
-          clockSVGElements.digitalClock.querySelector("#minutes").innerHTML = min < 10 ? "0" + min : min;
-          clockSVGElements.digitalClock.querySelector("#seconds").innerHTML = sec < 10 ? "0" + sec : sec;
+
+          const doubleDigit = (digit) => digit < 10 ? "0" + digit : digit;  
+          clockSVGElements.digitalClock.querySelector("#hours").innerHTML = isPM ? (h + 12 === 24 ? "00" : h + 12) : doubleDigit(h);
+          clockSVGElements.digitalClock.querySelector("#minutes").innerHTML = doubleDigit(min);
+          clockSVGElements.digitalClock.querySelector("#seconds").innerHTML = doubleDigit(sec);
 
           if (!svg.querySelector("#theClock")) {
             drawSVGClock();

@@ -60,6 +60,7 @@ class SVGElement {
   }
 
   class SVGText extends SVGElement {
+    tspans = {};
     constructor(x, y) {
         super("text");
         this.element.setAttributeNS(null, "x", x);
@@ -69,4 +70,17 @@ class SVGElement {
     addInnerHTML(content) {
         this.element.innerHTML = content;
     }
+
+    appendTSpan(id, content = "") {
+        const tspan = new SVGElement("tspan");
+        tspan.addId(id ?? "textSpan" + Object.keys(this.tspans).length);
+        tspan.getSVGElement().innerHTML = content;
+        this.tspans[id ?? "textSpan" + Object.keys(this.tspans).length] = tspan.getSVGElement();
+        this.element.append(tspan.getSVGElement());
+    }
+
+    getTSpanById(id) {
+        return this.tspans[id];
+    }
+
   }
