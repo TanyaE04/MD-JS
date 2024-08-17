@@ -56,8 +56,7 @@
         clock.setAttributeNS(null, "cy", centerY);
         clock.setAttributeNS(null, "r", clockRadius);
         clock.setAttributeNS(null, "fill", "url(#Gradient)");
-        svg.append(clock);
-
+        
         //dial
         const dialGroup = document.createElementNS(SVG_NS, "g");
         dialGroup.setAttributeNS(null, "fill", "white");
@@ -82,8 +81,7 @@
           text.innerHTML = i === 0 ? 12 : i;
           dialGroup.append(text);
         }
-        svg.append(dialGroup);
-
+       
         //hands
         const hands = {
           hourHand: document.createElementNS(SVG_NS, "line"),
@@ -110,10 +108,6 @@
         hands.secondHand.setAttributeNS(null, "stroke-width", STROKE_WIDTH);
         hands.secondHand.setAttributeNS(null, "stroke", "red");
 
-        svg.append(hands.hourHand);
-        svg.append(hands.minuteHand);
-        svg.append(hands.secondHand);
-
         //tick tack
         const startDate = new Date();
         
@@ -133,6 +127,12 @@
           tick(hands.secondHand, sec * ANGLE_STEP);
           tick(hands.minuteHand, min * ANGLE_STEP);
           tick(hands.hourHand, h * ANGLE_HOUR_STEP);
+          
+          svg.append(clock);
+          svg.append(dialGroup);
+          svg.append(hands.hourHand);
+          svg.append(hands.minuteHand);
+          svg.append(hands.secondHand);
         }, 1000);
       }
 
