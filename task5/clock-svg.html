@@ -12,6 +12,11 @@
       font-size: 32px;
       fill: black;
     }
+
+    tspan {
+      fill: blue;
+      font-size: 48px;
+    }
   </style>
   <body>
     <svg id="svg-clock" width="600" height="600">
@@ -43,14 +48,17 @@
       const ANGLE_STEP = 6;
       //angle step of the hour hand
       const ANGLE_HOUR_STEP = 30;
+      //clock object
+      const clockSVGElements = {};
 
-      function drawSVGClock() {
+      function buildSVGElements() {
         const clockRadius = centerX > centerY ? centerY : centerX;
 
         //base
         const clock = new SVGCircle(centerX, centerY, clockRadius);
         clock.addFill("url(#Gradient)");
-        svg.append(clock.getSVGElement());
+        clock.addId("theClock");
+        clockSVGElements.base = clock.getSVGElement();
 
         //dial
         const dialGroup = new SVGElement("g");
@@ -78,9 +86,31 @@
           text.addInnerHTML(i === 0 ? 12 : i);
           dialGroup.appendSVGElement(text.getSVGElement());
         }
-        svg.append(dialGroup.getSVGElement());
+        clockSVGElements.dial = dialGroup.getSVGElement();
+
+        //digital clock
+        const digitalClock = new SVGText(centerX, centerY / 1.7);
+        const hours = new SVGElement("tspan");
+        hours.addId("hours");
+        const minutes = new SVGElement("tspan");
+        minutes.addId("minutes");
+        const seconds = new SVGElement("tspan");
+        seconds.addId("seconds");
+        const delimiter = new SVGElement("tspan");
+        delimiter.getSVGElement().innerHTML = " : ";
+        const delimiter2 = new SVGElement("tspan");
+        delimiter2.getSVGElement().innerHTML = " : ";
+
+        digitalClock.appendSVGElement(hours.getSVGElement());
+        digitalClock.appendSVGElement(delimiter.getSVGElement());
+        digitalClock.appendSVGElement(minutes.getSVGElement());
+        digitalClock.appendSVGElement(delimiter2.getSVGElement());
+        digitalClock.appendSVGElement(seconds.getSVGElement());
+
+        clockSVGElements.digitalClock = digitalClock.getSVGElement();
 
         //hands
+        const hands = new SVGElement("g");
         const hourHand = new SVGLine(centerX, centerY, centerX, centerY / 2);
         hourHand.addId("hourHand");
         hourHand.addStroke("black");
@@ -101,54 +131,69 @@
         secondHand.addStroke("red");
         secondHand.addStrokeWidth(STROKE_WIDTH);
 
-        svg.append(hourHand.getSVGElement());
-        svg.append(minuteHand.getSVGElement());
-        svg.append(secondHand.getSVGElement());
+        hands.appendSVGElement(hourHand.getSVGElement());
+        hands.appendSVGElement(minuteHand.getSVGElement());
+        hands.appendSVGElement(secondHand.getSVGElement());
+
+        clockSVGElements.hands = hands.getSVGElement();
       }
 
       function tick() {
         const startDate = new Date();
+        let isPM = startDate.getHours() > 12;
 
         const timeId = setInterval(() => {
-          let sec = startDate.getSeconds() + (new Date() - startDate) / 1000;
+          let sec =
+            startDate.getSeconds() +
+            Math.floor((new Date() - startDate) / 1000);
           let min = startDate.getMinutes();
-          let h =
-            startDate.getHours() > 12
-              ? startDate.getHours() - 12
-              : startDate.getHours();
-          if (sec > 60) {
+          let h = isPM ? startDate.getHours() - 12 : startDate.getHours();
+          if (sec > 59) {
             min += Math.floor(sec / 60);
             sec = sec % 60;
-            if (min > 60) {
+            if (min > 59) {
               h += Math.floor(min / 60);
               min = min % 60;
             }
           }
-          document
-            .getElementById("hourHand")
+          clockSVGElements.hands
+            .querySelector("#hourHand")
             .setAttributeNS(
               null,
               "transform",
               `rotate(${h * ANGLE_HOUR_STEP}, ${centerX}, ${centerY})`
             );
-          document
-            .getElementById("minuteHand")
+          clockSVGElements.hands
+            .querySelector("#minuteHand")
             .setAttributeNS(
               null,
               "transform",
               `rotate(${min * ANGLE_STEP}, ${centerX}, ${centerY})`
             );
-          document
-            .getElementById("secondHand")
+          clockSVGElements.hands
+            .querySelector("#secondHand")
             .setAttributeNS(
               null,
               "transform",
               `rotate(${sec * ANGLE_STEP}, ${centerX}, ${centerY})`
             );
+          clockSVGElements.digitalClock.querySelector("#hours").innerHTML = isPM ? h + 12 : h < 10 ? "0" + h : h;
+          clockSVGElements.digitalClock.querySelector("#minutes").innerHTML = min < 10 ? "0" + min : min;
+          clockSVGElements.digitalClock.querySelector("#seconds").innerHTML = sec < 10 ? "0" + sec : sec;
+
+          if (!svg.querySelector("#theClock")) {
+            drawSVGClock();
+          }
         }, 1000);
       }
 
-      drawSVGClock();
+      function drawSVGClock() {
+        for (let key in clockSVGElements) {
+          svg.append(clockSVGElements[key]);
+        }
+      }
+
+      buildSVGElements();
       tick();
     </script>
   </body>

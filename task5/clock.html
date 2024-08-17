@@ -55,6 +55,7 @@
         clock.setAttributeNS(null, "cx", centerX);
         clock.setAttributeNS(null, "cy", centerY);
         clock.setAttributeNS(null, "r", clockRadius);
+        clock.setAttributeNS(null, "id", "theClock");
         clock.setAttributeNS(null, "fill", "url(#Gradient)");
         
         //dial
@@ -128,11 +129,13 @@
           tick(hands.minuteHand, min * ANGLE_STEP);
           tick(hands.hourHand, h * ANGLE_HOUR_STEP);
           
-          svg.append(clock);
-          svg.append(dialGroup);
-          svg.append(hands.hourHand);
-          svg.append(hands.minuteHand);
-          svg.append(hands.secondHand);
+          if (!svg.querySelector("#theClock")) {
+            svg.append(clock);
+            svg.append(dialGroup);
+            svg.append(hands.hourHand);
+            svg.append(hands.minuteHand);
+            svg.append(hands.secondHand);
+          } 
         }, 1000);
       }
 
