@@ -6,14 +6,12 @@
     <title>Clock-SVG</title>
   </head>
   <style>
-
     text {
       text-anchor: middle;
       dominant-baseline: middle;
       font-size: 32px;
       fill: black;
     }
-
   </style>
   <body>
     <svg id="svg-clock" width="600" height="600">
@@ -33,7 +31,7 @@
     <script src="../js/SVGElements.js"></script>
     <script>
       //SVG element where the clock will be placed
-      const svg = document.getElementById("svg-clock");      
+      const svg = document.getElementById("svg-clock");
       //indent used for the counting a dial radius and the clock hands length
       const INDENT = 70;
       //width of the second hand; it is a base for counting the width of the minute(x2) and hour(x3) hand of the clock
@@ -50,7 +48,7 @@
         const clockRadius = centerX > centerY ? centerY : centerX;
 
         //base
-        const clock = new SVGCircle(centerX, centerY, clockRadius); 
+        const clock = new SVGCircle(centerX, centerY, clockRadius);
         clock.addFill("url(#Gradient)");
         svg.append(clock.getSVGElement());
 
@@ -63,13 +61,20 @@
         const dest = clockRadius - INDENT;
 
         for (let i = 0; i < 12; i++) {
-          let circle = new SVGCircle(centerX + dest * Math.sin(radians), centerY - dest * Math.cos(radians), radius);
+          let circle = new SVGCircle(
+            centerX + dest * Math.sin(radians),
+            centerY - dest * Math.cos(radians),
+            radius
+          );
           circle.addFill("#c9abea");
           circle.addFilterUrl("url(#blur)");
           radians += Math.PI / 6;
           dialGroup.appendSVGElement(circle.getSVGElement());
 
-          const text = new SVGText(circle.getSVGElement().getAttributeNS(null, "cx"), circle.getSVGElement().getAttributeNS(null, "cy"));
+          const text = new SVGText(
+            circle.getSVGElement().getAttributeNS(null, "cx"),
+            circle.getSVGElement().getAttributeNS(null, "cy")
+          );
           text.addInnerHTML(i === 0 ? 12 : i);
           dialGroup.appendSVGElement(text.getSVGElement());
         }
@@ -81,7 +86,12 @@
         hourHand.addStroke("black");
         hourHand.addStrokeWidth(STROKE_WIDTH * 3);
 
-        const minuteHand = new SVGLine(centerX, centerY, centerX, INDENT + radius);
+        const minuteHand = new SVGLine(
+          centerX,
+          centerY,
+          centerX,
+          INDENT + radius
+        );
         minuteHand.addId("minuteHand");
         minuteHand.addStroke("black");
         minuteHand.addStrokeWidth(STROKE_WIDTH * 2);
@@ -97,18 +107,15 @@
       }
 
       function tick() {
-        //tick tack
-        const hourHand = document.getElementById("hourHand");
-        const minuteHand = document.getElementById("minuteHand");
-        const secondHand = document.getElementById("secondHand");
-
         const startDate = new Date();
-        let startHour = startDate.getHours() > 12 ? startDate.getHours() - 12 : startDate.getHours();
 
         const timeId = setInterval(() => {
           let sec = startDate.getSeconds() + (new Date() - startDate) / 1000;
           let min = startDate.getMinutes();
-          let h = startHour;
+          let h =
+            startDate.getHours() > 12
+              ? startDate.getHours() - 12
+              : startDate.getHours();
           if (sec > 60) {
             min += Math.floor(sec / 60);
             sec = sec % 60;
@@ -116,16 +123,33 @@
               h += Math.floor(min / 60);
               min = min % 60;
             }
-          } 
-          hourHand.setAttributeNS(null, "transform", `rotate(${(h * ANGLE_HOUR_STEP)}, ${centerX}, ${centerY})`); 
-          minuteHand.setAttributeNS(null, "transform", `rotate(${(min * ANGLE_STEP)}, ${centerX}, ${centerY})`); 
-          secondHand.setAttributeNS(null, "transform", `rotate(${(sec * ANGLE_STEP)}, ${centerX}, ${centerY})`); 
+          }
+          document
+            .getElementById("hourHand")
+            .setAttributeNS(
+              null,
+              "transform",
+              `rotate(${h * ANGLE_HOUR_STEP}, ${centerX}, ${centerY})`
+            );
+          document
+            .getElementById("minuteHand")
+            .setAttributeNS(
+              null,
+              "transform",
+              `rotate(${min * ANGLE_STEP}, ${centerX}, ${centerY})`
+            );
+          document
+            .getElementById("secondHand")
+            .setAttributeNS(
+              null,
+              "transform",
+              `rotate(${sec * ANGLE_STEP}, ${centerX}, ${centerY})`
+            );
         }, 1000);
       }
 
       drawSVGClock();
       tick();
-
     </script>
   </body>
 </html>

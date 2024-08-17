@@ -116,12 +116,11 @@
 
         //tick tack
         const startDate = new Date();
-        let startHour = startDate.getHours() > 12 ? startDate.getHours() - 12 : startDate.getHours();
-  
+        
         const timeId = setInterval(() => {
           let sec = startDate.getSeconds() + (new Date() - startDate) / 1000;
           let min = startDate.getMinutes();
-          let h = startHour;
+          let h = startDate.getHours() > 12 ? startDate.getHours() - 12 : startDate.getHours();
           if (sec > 60) {
             min += Math.floor(sec / 60);
             sec = sec % 60;
