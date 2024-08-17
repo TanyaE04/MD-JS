@@ -115,10 +115,10 @@
           let sec = startDate.getSeconds() + (new Date() - startDate) / 1000;
           let min = startDate.getMinutes();
           let h = startDate.getHours() > 12 ? startDate.getHours() - 12 : startDate.getHours();
-          if (sec > 60) {
+          if (sec > 59) {
             min += Math.floor(sec / 60);
             sec = sec % 60;
-            if (min > 60) {
+            if (min > 59) {
               h += Math.floor(min / 60);
               min = min % 60;
               h > 12 ? h - 12 : h;
