@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clock-canvas</title>
+</head>
+<style>
+</style>
+
+<body>
+    <canvas id="clock" width="600" height="600"></сanvas>
+
+    <script>
+        //indent used for the counting a dial radius and the clock hands length
+        const INDENT = 70;
+        //width of the second hand; it is a base for counting the width of the minute(x2) and hour(x3) hand of the clock
+        const STROKE_WIDTH = 3;
+
+        function drawClock() {
+            const canvas = document.getElementById("clock");
+            //coordinates of the clock center
+            const centerX = parseFloat(canvas.getAttribute("width")) / 2;
+            const centerY = parseFloat(canvas.getAttribute("height")) / 2;
+            const clockRadius = centerX > centerY ? centerY : centerX;
+
+            let ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, centerX * 2, centerY * 2);
+
+            //base
+            const gradient = ctx.createRadialGradient(centerX, centerY, clockRadius, centerX, centerY, 0);
+            gradient.addColorStop(0, "#06063d");
+            gradient.addColorStop(1, "white");
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, clockRadius, 0, Math.PI * 2);
+            ctx.fill();
+
+            //dial
+            let radians = 0;
+            const radius = (clockRadius - INDENT) / 5;
+            const dest = clockRadius - INDENT;
+
+            for (let i = 0; i < 12; i++) {
+                ctx.fillStyle = "#c9abea";
+                ctx.shadowColor = "#c9abea";
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.arc(centerX + dest * Math.sin(radians), centerY - dest * Math.cos(radians), radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.font = "32px serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillStyle = "white";
+                ctx.fillText(`${i === 0 ? 12 : i}`, centerX + dest * Math.sin(radians), centerY - dest * Math.cos(radians));
+                radians += Math.PI / 6;
+            }
+            //hands
+            ctx.save();
+            const now = new Date();
+            const isPM = now.getHours() > 12;
+            const h = isPM ? now.getHours() - 12 : now.getHours();
+            const min = now.getMinutes();
+            const sec = now.getSeconds();
+            ctx.translate(centerX, centerY);
+
+            //digital clock
+            ctx.save();
+            ctx.font = "44px serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillStyle = "black";
+            const doubleDigit = (num) => num > 10 ? num : "0" + num
+            ctx.fillText(`${isPM ? h + 12 : doubleDigit(h)} : ${doubleDigit(min)} : ${doubleDigit(sec)}`, 0, - (centerY / 2 - radius));
+            ctx.restore();
+
+            //hands
+            ctx.rotate(- Math.PI / 2);
+            ctx.strokeStyle = "black";
+
+            //hour hand
+            ctx.save();
+            ctx.rotate(h * (Math.PI / 6) + min * (Math.PI / 360) + sec * (Math.PI / 21600));
+            ctx.beginPath();
+            ctx.lineWidth = STROKE_WIDTH * 3;
+            ctx.moveTo(0, 0);
+            ctx.lineTo(centerX / 2, 0);
+            ctx.stroke();
+            ctx.restore();
+
+            //minute hand
+            ctx.save();
+            ctx.rotate(min * (Math.PI / 30) + sec * (Math.PI / 1800));
+            ctx.beginPath();
+            ctx.lineWidth = STROKE_WIDTH * 2;
+            ctx.moveTo(0, 0);
+            ctx.lineTo(centerX / 2 + radius, 0);
+            ctx.stroke();
+            ctx.restore();
+
+            //second hand
+            ctx.save();
+            ctx.rotate(sec * (Math.PI / 30));
+            ctx.beginPath();
+            ctx.lineWidth = STROKE_WIDTH;
+            ctx.strokeStyle = "red";
+            ctx.moveTo(0, 0);
+            ctx.lineTo(centerX / 2 + INDENT, 0);
+            ctx.stroke();
+            ctx.restore();
+
+            ctx.restore();
+            requestAnimationFrame(drawClock);
+
+        }
+
+        requestAnimationFrame(drawClock);
+
+    </script>
+</body>
+
+</html>
