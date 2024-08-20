@@ -126,8 +126,8 @@
             }
           } 
           tick(hands.secondHand, sec * ANGLE_STEP);
-          tick(hands.minuteHand, min * ANGLE_STEP);
-          tick(hands.hourHand, h * ANGLE_HOUR_STEP);
+          tick(hands.minuteHand, min * ANGLE_STEP + sec / 10);
+          tick(hands.hourHand, h * ANGLE_HOUR_STEP + min / 2 + sec / 120);
           
           if (!svg.querySelector("#theClock")) {
             svg.append(clock);
