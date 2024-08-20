@@ -150,14 +150,14 @@
             .setAttributeNS(
               null,
               "transform",
-              `rotate(${h * ANGLE_HOUR_STEP}, ${centerX}, ${centerY})`
+              `rotate(${ h * ANGLE_HOUR_STEP + min / 2 + sec / 120}, ${centerX}, ${centerY})`
             );
           clockSVGElements.hands
             .querySelector("#minuteHand")
             .setAttributeNS(
               null,
               "transform",
-              `rotate(${min * ANGLE_STEP}, ${centerX}, ${centerY})`
+              `rotate(${min * ANGLE_STEP + sec / 10}, ${centerX}, ${centerY})`
             );
           clockSVGElements.hands
             .querySelector("#secondHand")
