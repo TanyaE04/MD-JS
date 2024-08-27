@@ -1,261 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ping-pong</title>
     <link rel="stylesheet" href="../css/ping-pong.css" />
-</head>
-<style></style>
+  </head>
+  <style></style>
 
-<body>
+  <body>
     <div>
-        <button class="btn" type="button" onclick="start();">Start</button>
-        <div id="scoreboard">
-            <span id="left">0</span>
-            <span>:</span>
-            <span id="right">0</span>
-        </div>
+      <button class="btn" type="button" onclick="start();">Start</button>
+      <div id="scoreboard">
+        <span id="left">0</span>
+        <span>:</span>
+        <span id="right">0</span>
+      </div>
     </div>
     <div id="field">
-        <div id="ball"></div>
-        <div id="leftRacket"></div>
-        <div id="rightRacket"></div>
-        <text id="countdown">5 ...</text>
-        <text class="winner"></text>
+      <div id="ball"></div>
+      <div id="leftRacket"></div>
+      <div id="rightRacket"></div>
+      <text id="countdown">5 ...</text>
+      <text class="winner"></text>
     </div>
 
     <script>
-    
-        const winCount = 5; //необходимое число очков для победы
-        const fieldWidth = 800; //ширина игрового поля
-        const fieldHeight = 600; //высоота игрового поля
-        const racketWidth = 20; //ширина ракетки
-        const racketHeight = 200; //длина ракетки
-        const racketSpeed = 20; //скорость ракетки
-        const ballRadius = 25; //радиус мяча
-        const ballMinSpeed = 10; //мин. скорость движения по оси Y; исп-ся для расчета скорости по оси X (х2) 
-        let timerId = null;
+      const winCount = 5; //необходимое число очков для победы
+      const fieldWidth = 800; //ширина игрового поля
+      const fieldHeight = 600; //высоота игрового поля
+      const racketWidth = 20; //ширина ракетки
+      const racketHeight = 200; //длина ракетки
+      const racketSpeed = 20; //скорость ракетки
+      const ballRadius = 25; //радиус мяча
+      const ballMinSpeed = 10; //мин. скорость движения по оси Y; исп-ся для расчета скорости по оси X (х2)
+      let timerId = null;
 
-        const ball = {
-            posX: fieldWidth / 2 - ballRadius,
-            posY: fieldHeight / 2 - ballRadius,
-            speedX: 0,
-            speedY: 0,
-            width: ballRadius * 2,
-            height: ballRadius * 2,
+      const ball = {
+        posX: fieldWidth / 2 - ballRadius,
+        posY: fieldHeight / 2 - ballRadius,
+        speedX: 0,
+        speedY: 0,
+        width: ballRadius * 2,
+        height: ballRadius * 2,
 
-            update: function () {
-                let ballElem = document.getElementById("ball");
-                ballElem.style.left = this.posX + "px";
-                ballElem.style.top = this.posY + "px";
-            },
-        };
+        update: function () {
+          let ballElem = document.getElementById("ball");
+          ballElem.style.left = this.posX + "px";
+          ballElem.style.top = this.posY + "px";
+        },
+      };
 
-        const leftRacket = {
-            posX: 0,
-            posY: fieldHeight / 2 - racketHeight / 2,
-            timerId: 0,
+      const leftRacket = {
+        posX: 0,
+        posY: fieldHeight / 2 - racketHeight / 2,
+        timerId: 0,
 
-            move: function (up = true) {
-                let leftRacketElem = document.getElementById("leftRacket");
-                up ? (this.posY -= racketSpeed) : (this.posY += racketSpeed);
-                if (this.posY < 0) this.posY = 0;
-                if (this.posY + racketHeight > fieldHeight)
-                    this.posY = fieldHeight - racketHeight;
-                leftRacketElem.style.top = this.posY + "px";
-            },
-        };
+        move: function (up = true) {
+          let leftRacketElem = document.getElementById("leftRacket");
+          up ? (this.posY -= racketSpeed) : (this.posY += racketSpeed);
+          if (this.posY < 0) this.posY = 0;
+          if (this.posY + racketHeight > fieldHeight)
+            this.posY = fieldHeight - racketHeight;
+          leftRacketElem.style.top = this.posY + "px";
+        },
+      };
 
-        const rightRacket = {
-            posX: fieldWidth - racketWidth,
-            posY: fieldHeight / 2 - racketHeight / 2,
-            timerId: 0,
+      const rightRacket = {
+        posX: fieldWidth - racketWidth,
+        posY: fieldHeight / 2 - racketHeight / 2,
+        timerId: 0,
 
-            move: function (up = true) {
-                console.log("start position  ", this.posY);
-                let rightRacketElem = document.getElementById("rightRacket");
-                up ? (this.posY -= racketSpeed) : (this.posY += racketSpeed);
-                if (this.posY < 0) this.posY = 0;
-                if (this.posY + racketHeight > fieldHeight) this.posY = fieldHeight - racketHeight;
-                console.log("end position  ", this.posY);
-                rightRacketElem.style.top = this.posY + "px";
-            },
-        };
+        move: function (up = true) {
+          console.log("start position  ", this.posY);
+          let rightRacketElem = document.getElementById("rightRacket");
+          up ? (this.posY -= racketSpeed) : (this.posY += racketSpeed);
+          if (this.posY < 0) this.posY = 0;
+          if (this.posY + racketHeight > fieldHeight)
+            this.posY = fieldHeight - racketHeight;
+          console.log("end position  ", this.posY);
+          rightRacketElem.style.top = this.posY + "px";
+        },
+      };
 
-        drawField();
-        addEventListener();
+      drawField();
+      addEventListener();
 
-        function drawField() {
-            const fieldElement = document.getElementById("field");
-            fieldElement.style.width = fieldWidth + "px";
-            fieldElement.style.height = fieldHeight + "px";
+      function drawField() {
+        const fieldElement = document.getElementById("field");
+        fieldElement.style.width = fieldWidth + "px";
+        fieldElement.style.height = fieldHeight + "px";
 
-            const ballElement = document.getElementById("ball");
-            ballElement.style.width = ball.width + "px";
-            ballElement.style.height = ball.height + "px";
-            ballElement.style.left = ball.posX + "px";
-            ballElement.style.top = ball.posY + "px";
+        const ballElement = document.getElementById("ball");
+        ballElement.style.width = ball.width + "px";
+        ballElement.style.height = ball.height + "px";
+        ballElement.style.left = ball.posX + "px";
+        ballElement.style.top = ball.posY + "px";
 
-            const leftRacketElement = document.getElementById("leftRacket");
-            leftRacketElement.style.width = racketWidth + "px";
-            leftRacketElement.style.height = racketHeight + "px";
-            leftRacketElement.style.left = leftRacket.posX + "px";
-            leftRacketElement.style.top = leftRacket.posY + "px";
+        const leftRacketElement = document.getElementById("leftRacket");
+        leftRacketElement.style.width = racketWidth + "px";
+        leftRacketElement.style.height = racketHeight + "px";
+        leftRacketElement.style.left = leftRacket.posX + "px";
+        leftRacketElement.style.top = leftRacket.posY + "px";
 
-            const rightRacketElement = document.getElementById("rightRacket");
-            rightRacketElement.style.width = racketWidth + "px";
-            rightRacketElement.style.height = racketHeight + "px";
-            rightRacketElement.style.left = rightRacket.posX + "px";
-            rightRacketElement.style.top = rightRacket.posY + "px";
+        const rightRacketElement = document.getElementById("rightRacket");
+        rightRacketElement.style.width = racketWidth + "px";
+        rightRacketElement.style.height = racketHeight + "px";
+        rightRacketElement.style.left = rightRacket.posX + "px";
+        rightRacketElement.style.top = rightRacket.posY + "px";
+      }
+
+      function addEventListener() {
+        document.addEventListener("keydown", function (event) {
+          event.preventDefault();
+          switch (event.code) {
+            case "ShiftLeft":
+              clearInterval(leftRacket.timerId);
+              leftRacket.timerId = setInterval(() => leftRacket.move(), 40);
+              break;
+            case "ControlLeft":
+              clearInterval(leftRacket.timerId);
+              leftRacket.timerId = setInterval(() => leftRacket.move(false), 40);
+              break;
+            case "ArrowUp":
+              clearInterval(rightRacket.timerId);
+              rightRacket.timerId = setInterval(() => rightRacket.move(), 40);
+              break;
+            case "ArrowDown":
+              clearInterval(rightRacket.timerId);
+              rightRacket.timerId = setInterval(() => rightRacket.move(false), 40);
+              break;
+          }
+        });
+
+        document.addEventListener("keyup", function (event) {
+          event.preventDefault();
+          switch (event.code) {
+            case "ShiftLeft":
+            case "ControlLeft":
+              console.log("clear timerId ", leftRacket.timerId);
+              clearInterval(leftRacket.timerId);
+              break;
+            case "ArrowUp":
+            case "ArrowDown":
+              console.log("clear timerId ", rightRacket.timerId);
+              clearInterval(rightRacket.timerId);
+              break;
+          }
+        });
+      }
+
+      function start() {
+        clearInterval(timerId);
+        document.querySelector(".winner").style.display = "none";
+        //возвращаем мяч в исходное положение
+        ball.posX = fieldWidth / 2 - ballRadius;
+        ball.posY = fieldHeight / 2 - ballRadius;
+        //задаем скорость мячу
+        let speed = Math.round(Math.random() + ballMinSpeed);
+        ball.speedX = Math.random() > 0.5 ? speed * 2 : -speed * 2;
+        ball.speedY = Math.random() > 0.5 ? speed : -speed;
+        //запускаем движение
+        timerId = setInterval(tick, 40);
+      }
+
+      function tick() {
+        ball.posX += ball.speedX;
+        //правая стена
+        if (ball.posX + ball.width > fieldWidth - racketWidth) {
+          //отобьет?
+          if (
+            ball.posY + ballRadius > rightRacket.posY &&
+            ball.posY + ballRadius < rightRacket.posY + racketHeight
+          ) {
+            ball.speedX = -ball.speedX;
+            ball.posX = fieldWidth - racketWidth - ball.width;
+          }
+        }
+        //будет гол правому игроку
+        if (ball.posX + ball.width > fieldWidth) {
+          ball.posX = fieldWidth - ball.width;
+          clearInterval(timerId);
+          score("left");
+        }
+        // левая стена
+        if (ball.posX < racketWidth) {
+          //отобьет?
+          if (
+            ball.posY + ballRadius > leftRacket.posY &&
+            ball.posY + ballRadius < leftRacket.posY + racketHeight
+          ) {
+            ball.speedX = -ball.speedX;
+            ball.posX = racketWidth;
+          }
+        }
+        //будет гол левому игроку
+        if (ball.posX < 0) {
+          ball.posX = 0;
+          clearInterval(timerId);
+          score("right");
         }
 
-        function addEventListener() {
-            document.addEventListener("keydown", function (event) {
-                event.preventDefault();
-                switch (event.code) {
-                    case "ShiftLeft":
-                        clearInterval(leftRacket.timerId);
-                        leftRacket.timerId = setInterval(() => leftRacket.move(), 40);
-                        break;
-                    case "ControlLeft":
-                        clearInterval(leftRacket.timerId);
-                        leftRacket.timerId = setInterval(
-                            () => leftRacket.move(false),
-                            40
-                        );
-                        break;
-                    case "ArrowUp":
-                        clearInterval(rightRacket.timerId);
-                        rightRacket.timerId = setInterval(() => rightRacket.move(), 40);
-                        break;
-                    case "ArrowDown":
-                        clearInterval(rightRacket.timerId);
-                        rightRacket.timerId = setInterval(() => rightRacket.move(false), 40);
-                        break;
-                }
-            });
-
-            document.addEventListener("keyup", function (event) {
-                event.preventDefault();
-                //debugger;
-                switch (event.code) {
-                    case "ShiftLeft":
-                    case "ControlLeft":
-                        console.log("clear timerId ", leftRacket.timerId);
-                        clearInterval(leftRacket.timerId);
-                        break;
-                    case "ArrowUp":
-                    case "ArrowDown":
-                        console.log("clear timerId ", rightRacket.timerId);
-                        clearInterval(rightRacket.timerId);
-                        break;
-                }
-            });
+        ball.posY += ball.speedY;
+        // вылетел ли мяч ниже пола?
+        if (ball.posY + ball.height > fieldHeight) {
+          ball.speedY = -ball.speedY;
+          ball.posY = fieldHeight - ball.height;
         }
+        // вылетел ли мяч выше потолка?
+        if (ball.posY < 0) {
+          ball.speedY = -ball.speedY;
+          ball.posY = 0;
+        }
+        ball.update();
+      }
 
-        function start() {
+      function score(side) {
+        let scoreEl = document.getElementById(side);
+        const newScore = ++scoreEl.innerText;
+        if (newScore === winCount) {
+          const winner = document.querySelector(".winner");
+          winner.style.display = "block";
+          winner.innerText = `The ${side} racket won!!!`;
+          clearScore();
+        } else {
+          scoreEl.innerText = newScore;
+          startAfterCountdown();
+        }
+      }
+
+      function clearScore() {
+        const left = document.querySelector("#left");
+        left.innerText = 0;
+        const right = document.querySelector("#right");
+        right.innerText = 0;
+      }
+
+      function startAfterCountdown() {
+        const countdownElem = document.getElementById("countdown");
+        let i = 5;
+        let timerId = setInterval(function countdown() {
+          if (i > 0) {
+            countdownElem.style.display = "block";
+            countdownElem.innerText = i--;
+          } else {
             clearInterval(timerId);
-            document.querySelector(".winner").style.display = "none";
-            //возвращаем мяч в исходное положение
-            ball.posX = fieldWidth / 2 - ballRadius;
-            ball.posY = fieldHeight / 2 - ballRadius;
-            //задаем скорость мячу
-            let speed = Math.round(Math.random() + ballMinSpeed);
-            ball.speedX = Math.random() > 0.5 ? speed * 2 : -speed * 2;
-            ball.speedY = Math.random() > 0.5 ? speed : -speed;
-            //запускаем движение
-            timerId = setInterval(tick, 40);
-        }
-
-        function tick() {
-            ball.posX += ball.speedX;
-            //правая стена
-            if (ball.posX + ball.width > fieldWidth - racketWidth) {
-                //отобьет?
-                if (
-                    ball.posY + ballRadius > rightRacket.posY &&
-                    ball.posY + ballRadius < rightRacket.posY + racketHeight
-                ) {
-                    ball.speedX = -ball.speedX;
-                    ball.posX = fieldWidth - racketWidth - ball.width;
-                }
-            }
-            //будет гол правому игроку
-            if (ball.posX + ball.width > fieldWidth) {
-                ball.posX = fieldWidth - ball.width;
-                clearInterval(timerId);
-                score("left");
-            }
-            // левая стена
-            if (ball.posX < racketWidth) {
-                //отобьет?
-                if (
-                    ball.posY + ballRadius > leftRacket.posY &&
-                    ball.posY + ballRadius < leftRacket.posY + racketHeight
-                ) {
-                    ball.speedX = -ball.speedX;
-                    ball.posX = racketWidth;
-                }
-            }
-            //будет гол левому игроку
-            if (ball.posX < 0) {
-                ball.posX = 0;
-                clearInterval(timerId);
-                score("right");
-            }
-
-            ball.posY += ball.speedY;
-            // вылетел ли мяч ниже пола?
-            if (ball.posY + ball.height > fieldHeight) {
-                ball.speedY = -ball.speedY;
-                ball.posY = fieldHeight - ball.height;
-            }
-            // вылетел ли мяч выше потолка?
-            if (ball.posY < 0) {
-                ball.speedY = -ball.speedY;
-                ball.posY = 0;
-            }
-            ball.update();
-        }
-
-        function score(side) {
-            let scoreEl = document.getElementById(side);
-            const newScore = ++scoreEl.innerText;
-            if (newScore === winCount) {
-                const winner = document.querySelector(".winner");
-                winner.style.display = "block";
-                winner.innerText = `The ${side} racket won!!!`;
-                clearScore();
-            } else {
-                scoreEl.innerText = newScore;
-                startAfterCountdown();
-            }
-        }
-
-        function clearScore() {
-            const left = document.querySelector("#left");
-            left.innerText = 0;
-            const right = document.querySelector("#right");
-            right.innerText = 0;
-        }
-
-        function startAfterCountdown() {
-            const countdownElem = document.getElementById("countdown");
-            let i = 5;
-            let timerId = setInterval(function countdown() {
-                if (i > 0) {
-                    countdownElem.style.display = "block";
-                    countdownElem.innerText = i--;
-                } else {
-                    clearInterval(timerId);
-                    countdownElem.style.display = "none";
-                    start();
-                }
-            }, 1000);
-        }
+            countdownElem.style.display = "none";
+            start();
+          }
+        }, 1000);
+      }
+      
     </script>
-</body>
-
+  </body>
 </html>
