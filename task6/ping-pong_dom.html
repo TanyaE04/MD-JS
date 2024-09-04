@@ -72,13 +72,11 @@
         timerId: 0,
 
         move: function (up = true) {
-          console.log("start position  ", this.posY);
           let rightRacketElem = document.getElementById("rightRacket");
           up ? (this.posY -= racketSpeed) : (this.posY += racketSpeed);
           if (this.posY < 0) this.posY = 0;
           if (this.posY + racketHeight > fieldHeight)
             this.posY = fieldHeight - racketHeight;
-          console.log("end position  ", this.posY);
           rightRacketElem.style.top = this.posY + "px";
         },
       };
@@ -138,12 +136,10 @@
           switch (event.code) {
             case "ShiftLeft":
             case "ControlLeft":
-              console.log("clear timerId ", leftRacket.timerId);
               clearInterval(leftRacket.timerId);
               break;
             case "ArrowUp":
             case "ArrowDown":
-              console.log("clear timerId ", rightRacket.timerId);
               clearInterval(rightRacket.timerId);
               break;
           }

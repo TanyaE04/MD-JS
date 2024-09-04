@@ -72,7 +72,7 @@
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             ctx.fillStyle = "black";
-            const doubleDigit = (num) => num > 10 ? num : "0" + num
+            const doubleDigit = (num) => num > 9 ? num : "0" + num
             ctx.fillText(`${isPM ? h + 12 : doubleDigit(h)} : ${doubleDigit(min)} : ${doubleDigit(sec)}`, 0, - (centerY / 2 - radius));
             ctx.restore();
 
