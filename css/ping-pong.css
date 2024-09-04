@@ -16,22 +16,30 @@ span {
     margin: 15px 15px;
     background-color: rgb(238, 238, 115);
     border: 3px solid black;
+    fill: rgb(238, 238, 115);
+    stroke: black;
+    stroke-width: 3px;
 }
 
 #ball {
     position: absolute;
     border-radius: 50%;
     background-color: black;
+    fill: black;
 }
 
 #leftRacket {
     position: absolute;
     background-color: blue;
+    fill: blue;
+    stroke-width: 0;
 }
 
 #rightRacket {
     position: absolute;
     background-color: red;
+    fill: red;
+    stroke-width: 0;
 }
 
 .btn {
@@ -60,6 +68,22 @@ span {
     margin: auto;
     width: 150px;
     height: 150px;
+  }
+
+  #count {
+    fill: black;
+    stroke: black;
+    font-size: 60px;
+    text-anchor: middle;
+    dominant-baseline: middle;
+  }
+
+  #winner {
+    fill: green;
+    stroke: black;
+    font-size: 60px;
+    text-anchor: middle;
+    dominant-baseline: middle;
   }
 
   .winner {
