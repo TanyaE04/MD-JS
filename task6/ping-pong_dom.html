@@ -150,6 +150,7 @@
       function start(isNewGame = true) {
         if (isNewGame) {
           document.querySelector(".winner").style.display = "none";
+          document.getElementById("countdown").style.display = "none";
           clearInterval(countdownTimerId);
           clearScore();
         }

@@ -157,8 +157,13 @@
         });
       }
 
-      function start() {
-        document.getElementById("winner").innerHTML = "";
+      function start(isNewGame = true) {
+        if (isNewGame) {
+          document.getElementById("winner").innerHTML = "";
+          document.getElementById("count").innerHTML = "";
+          clearInterval(timerId);
+          clearScore();
+        }
         //возвращаем мяч в исходное положение
         ball.posX = fieldWidth / 2;
         ball.posY = fieldHeight / 2;
@@ -167,7 +172,7 @@
         ball.speedX = Math.random() > 0.5 ? speed * 2 : -speed * 2;
         ball.speedY = Math.random() > 0.5 ? speed : -speed;
         //запускаем движение
-        timerId = requestAnimationFrame(tick);
+        requestAnimationFrame(tick);
       }
 
       function tick() {
@@ -186,7 +191,6 @@
         //будет гол правому игроку
         if (ball.posX + ballRadius > fieldWidth) {
           ball.posX = fieldWidth - ballRadius;
-          cancelAnimationFrame(timerId);
           score("left");
           return;
         }
@@ -204,7 +208,6 @@
         //будет гол левому игроку
         if (ball.posX - ballRadius < 0) {
           ball.posX = ballRadius;
-          cancelAnimationFrame(timerId);
           score("right");
           return;
         }
@@ -221,8 +224,7 @@
           ball.posY = ballRadius;
         }
         ball.update();
-        cancelAnimationFrame(timerId);
-        timerId = requestAnimationFrame(tick);
+        requestAnimationFrame(tick);
       }
 
       function score(side) {
@@ -232,7 +234,6 @@
           const winner = document.getElementById("winner");
           winner.setAttributeNS(null, "visibility", "visible");
           winner.innerHTML = `The ${side} racket won!!!`;
-          clearScore();
         } else {
           scoreEl.innerText = newScore;
           startAfterCountdown();
@@ -249,13 +250,13 @@
       function startAfterCountdown() {
         const countdownElem = document.getElementById("count");
         let i = 5;
-        let timerId = setInterval(function countdown() {
+        timerId = setInterval(function countdown() {
           if (i > 0) {
             countdownElem.innerHTML = i--;
           } else {
             clearInterval(timerId);
             countdownElem.innerHTML = "";
-            start();
+            start(false);
           }
         }, 1000);
       }
