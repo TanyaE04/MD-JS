@@ -1,102 +1,110 @@
 span {
-    font-size: 32px;
+  font-size: 32px;
+}
+
+canvas {
+  margin: 15px;
 }
 
 #scoreboard {
-    position: absolute;
-    top: 25px;
-    left: 380px;
-    padding: 10px 20px;
-    background-color: rgb(127, 190, 127);
-    display: inline-block;
+  position: absolute;
+  top: 25px;
+  left: 380px;
+  padding: 10px 20px;
+  background-color: rgb(127, 190, 127);
+  display: inline-block;
 }
 
 #field {
-    position: relative;
-    margin: 15px 15px;
-    background-color: rgb(238, 238, 115);
-    border: 3px solid black;
-    fill: rgb(238, 238, 115);
-    stroke: black;
-    stroke-width: 3px;
+  position: relative;
+  margin: 15px 15px;
+  background-color: rgb(238, 238, 115);
+  border: 3px solid black;
+  fill: rgb(238, 238, 115);
+  stroke: black;
+  stroke-width: 3px;
+}
+
+.field {
+  position: relative;
 }
 
 #ball {
-    position: absolute;
-    border-radius: 50%;
-    background-color: black;
-    fill: black;
+  position: absolute;
+  border-radius: 50%;
+  background-color: black;
+  fill: black;
 }
 
 #leftRacket {
-    position: absolute;
-    background-color: blue;
-    fill: blue;
-    stroke-width: 0;
+  position: absolute;
+  background-color: blue;
+  fill: blue;
+  stroke-width: 0;
 }
 
 #rightRacket {
-    position: absolute;
-    background-color: red;
-    fill: red;
-    stroke-width: 0;
+  position: absolute;
+  background-color: red;
+  fill: red;
+  stroke-width: 0;
 }
 
 .btn {
-    border: none;
-    color: white;
-    background-color: rgb(35, 9, 59);
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 25px 15px 0px 15px;
-    cursor: pointer;
-  }
+  border: none;
+  color: white;
+  background-color: rgb(35, 9, 59);
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 25px 15px 0px 15px;
+  cursor: pointer;
+}
 
-  #countdown {
-    display: none;
-    text-align: center;
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    font-size: 60px;
-    color: black;
-    margin: auto;
-    width: 150px;
-    height: 150px;
-  }
+#countdown {
+  display: none;
+  text-align: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  font-size: 60px;
+  color: black;
+  margin: auto;
+  width: 150px;
+  height: 150px;
+}
 
-  #count {
-    fill: black;
-    stroke: black;
-    font-size: 60px;
-    text-anchor: middle;
-    dominant-baseline: middle;
-  }
+#count {
+  fill: black;
+  stroke: black;
+  font-size: 60px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
 
-  #winner {
-    fill: green;
-    stroke: black;
-    font-size: 60px;
-    text-anchor: middle;
-    dominant-baseline: middle;
-  }
+#winner {
+  fill: green;
+  stroke: black;
+  font-size: 60px;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
 
-  .winner {
-    display: none;
-    text-align: center;
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    font-size: 40px;
-    margin: auto;
-    width: 400px;
-    height: 200px;
-    color: rgb(32, 235, 5);
-  }
+.winner {
+  display: none;
+  text-align: center;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  font-size: 40px;
+  margin: auto;
+  width: 400px;
+  height: 200px;
+  color: rgb(32, 235, 5);
+}

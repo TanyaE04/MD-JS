@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ping-pong-Canvas</title>
+    <link rel="stylesheet" href="../css/ping-pong.css" />
+  </head>
+
+  <body>
+    <div >
+      <button class="btn" type="button" onclick="start();">Start</button>
+      <div id="scoreboard">
+        <span id="left">0</span>
+        <span>:</span>
+        <span id="right">0</span>
+      </div>
+    </div>
+    
+    <div class="field">
+      <canvas id="ping-pong"></canvas>
+      <div id="countdown">5</div>
+      <div id="winner"></div>
+    </div>
+
+    <script>
+        
+      const winCount = 5; //необходимое число очков для победы
+      const fieldWidth = 800; //ширина игрового поля
+      const fieldHeight = 600; //высоота игрового поля
+      const racketWidth = 20; //ширина ракетки
+      const racketHeight = 200; //длина ракетки
+      const racketSpeed = 7; //скорость ракетки
+      const ballRadius = 25; //радиус мяча
+      const ballMinSpeed = 3; //мин. скорость движения по оси Y; исп-ся для расчета скорости по оси X (х2)
+      let winnerSide = null;
+      let isGoal = false;
+      let intervalId = null;
+      let timerId = null;
+
+      const settings = {
+        canvas: null,
+        ctx: null,
+        bufferCanvas: null,
+        bufferCtx: null,
+      };
+     
+      const ball = {
+        posX: fieldWidth / 2,
+        posY: fieldHeight / 2,
+        speedX: 0,
+        speedY: 0,
+      };
+
+      const leftRacket = {
+        posX: 0,
+        posY: fieldHeight / 2 - racketHeight / 2,
+        timerId: 0,
+
+        move: function (up = true) {
+          up ? (this.posY -= racketSpeed) : (this.posY += racketSpeed);
+          if (this.posY < 0) this.posY = 0;
+          if (this.posY + racketHeight > fieldHeight) this.posY = fieldHeight - racketHeight;
+          cancelAnimationFrame(this.timerId);
+          this.timerId = requestAnimationFrame(() => this.move(up));
+        },
+      };
+
+      const rightRacket = {
+        posX: fieldWidth - racketWidth,
+        posY: fieldHeight / 2 - racketHeight / 2,
+        timerId: 0,
+
+        move: function (up = true) {
+          up ? (this.posY -= racketSpeed) : (this.posY += racketSpeed);
+          if (this.posY < 0) this.posY = 0;
+          if (this.posY + racketHeight > fieldHeight) this.posY = fieldHeight - racketHeight;
+          cancelAnimationFrame(this.timerId);
+          this.timerId = requestAnimationFrame(() => this.move(up));
+        },
+      };
+
+      begin();
+      addEventListener();
+
+      function begin() {
+        let fieldDIV = document.querySelector(".field");
+        fieldDIV.style.width = fieldWidth + "px";
+        fieldDIV.style.height = fieldHeight + "px";
+        settings.canvas = document.getElementById("ping-pong");
+        settings.ctx = settings.canvas.getContext("2d");
+        drawField();
+        settings.canvas.width = settings.bufferCanvas.width;
+        settings.canvas.height = settings.bufferCanvas.height;
+        settings.ctx.drawImage(settings.bufferCanvas, 0, 0, settings.canvas.width, settings.canvas.height);
+      }
+
+      function drawField() {
+        settings.bufferCanvas = document.createElement("canvas");
+        settings.bufferCanvas.width = fieldWidth;
+        settings.bufferCanvas.height = fieldHeight;
+        settings.bufferCtx = settings.bufferCanvas.getContext("2d");
+
+        settings.bufferCtx.fillStyle = "rgb(238, 238, 115)";
+        settings.bufferCtx.fillRect(0, 0, fieldWidth, fieldHeight);
+        settings.bufferCtx.fillStyle = "black";
+        
+        settings.bufferCtx.beginPath();
+        settings.bufferCtx.arc(ball.posX, ball.posY, ballRadius, 0, Math.PI * 2);
+        settings.bufferCtx.fill();
+
+        settings.bufferCtx.fillStyle = "blue";
+        settings.bufferCtx.fillRect(leftRacket.posX, leftRacket.posY, racketWidth, racketHeight);
+
+        settings.bufferCtx.fillStyle = "red";
+        settings.bufferCtx.fillRect(rightRacket.posX, rightRacket.posY, racketWidth, racketHeight);
+
+        if (winnerSide) {
+          settings.bufferCtx.fillStyle = "green";
+          settings.bufferCtx.font = "48px serif";
+          settings.bufferCtx.textAlign = "center";
+          settings.bufferCtx.textBaseline = "middle";
+          settings.bufferCtx.fillText(`The ${winnerSide} racket won!!!`, fieldWidth / 2, fieldHeight / 2);
+        }
+      }
+
+      function addEventListener() {
+        document.addEventListener("keydown", function (event) {
+          event.preventDefault();
+          switch (event.code) {
+            case "ShiftLeft":
+              leftRacket.timerId = requestAnimationFrame(() => leftRacket.move());
+              break;
+            case "ControlLeft":
+              leftRacket.timerId = requestAnimationFrame(() => leftRacket.move(false));
+              break;
+            case "ArrowUp":
+              rightRacket.timerId = requestAnimationFrame(() => rightRacket.move());
+              break;
+            case "ArrowDown":
+              rightRacket.timerId = requestAnimationFrame(() => rightRacket.move(false));
+              break;
+          }
+        });
+
+        document.addEventListener("keyup", function (event) {
+          event.preventDefault();
+          switch (event.code) {
+            case "ShiftLeft":
+            case "ControlLeft":
+              cancelAnimationFrame(leftRacket.timerId);
+              break;
+            case "ArrowUp":
+            case "ArrowDown":
+              cancelAnimationFrame(rightRacket.timerId);
+              break;
+          }
+        });
+      }
+
+      function start(isNewGame = true) {
+        cancelAnimationFrame(timerId);
+        if (isNewGame) {
+          document.getElementById("countdown").style.display = "none";
+          clearInterval(intervalId);
+          clearScore();
+        }
+        winnerSide = null;
+        //возвращаем мяч в исходное положение
+        ball.posX = fieldWidth / 2;
+        ball.posY = fieldHeight / 2;
+        //задаем скорость мячу
+        let speed = Math.round(Math.random() + ballMinSpeed);
+        ball.speedX = Math.random() > 0.5 ? speed * 2 : -speed * 2;
+        ball.speedY = Math.random() > 0.5 ? speed : -speed;
+        //запускаем движение
+        timerId = requestAnimationFrame(move);
+      }
+
+      function move() {
+        settings.ctx.clearRect(0, 0, settings.canvas.width, settings.canvas.height);
+        tick();
+        drawField();
+        settings.ctx.drawImage(settings.bufferCanvas, 0, 0, settings.canvas.width, settings.canvas.height);
+        if (isGoal) { 
+          isGoal = false;
+          if(!winnerSide) {
+            startAfterCountdown();
+          }     
+        } else {
+          timerId = requestAnimationFrame(move);
+        }
+      }
+
+      function tick() {
+        ball.posX += ball.speedX;
+        //правая стена
+        if (ball.posX + ballRadius > fieldWidth - racketWidth) {
+          //отобьет?
+          if (
+            ball.posY > rightRacket.posY &&
+            ball.posY < rightRacket.posY + racketHeight
+          ) {
+            ball.speedX = -ball.speedX;
+            ball.posX = fieldWidth - racketWidth - ballRadius;
+          }
+        }
+        //будет гол правому игроку
+        if (ball.posX + ballRadius > fieldWidth) {
+          ball.posX = fieldWidth - ballRadius;
+          score("left");
+          return;
+        }
+        // левая стена
+        if (ball.posX - ballRadius < racketWidth) {
+          //отобьет?
+          if (
+            ball.posY > leftRacket.posY &&
+            ball.posY < leftRacket.posY + racketHeight
+          ) {
+            ball.speedX = -ball.speedX;
+            ball.posX = racketWidth + ballRadius;
+          }
+        }
+        //будет гол левому игроку
+        if (ball.posX - ballRadius < 0) {
+          ball.posX = ballRadius;
+          score("right");
+          return;
+        }
+
+        ball.posY += ball.speedY;
+        // вылетел ли мяч ниже пола?
+        if (ball.posY + ballRadius > fieldHeight) {
+          ball.speedY = -ball.speedY;
+          ball.posY = fieldHeight - ballRadius;
+        }
+        // вылетел ли мяч выше потолка?
+        if (ball.posY - ballRadius < 0) {
+          ball.speedY = -ball.speedY;
+          ball.posY = ballRadius;
+        }
+      }
+
+      function score(side) {
+        isGoal = true;
+        let scoreEl = document.getElementById(side);
+        const newScore = ++scoreEl.innerText;
+        if (newScore === winCount) {
+          winnerSide = side;
+        } else {
+          scoreEl.innerText = newScore;
+        }
+      }
+
+      function clearScore() {
+        const left = document.querySelector("#left");
+        left.innerText = 0;
+        const right = document.querySelector("#right");
+        right.innerText = 0;
+      }
+
+      function startAfterCountdown() {
+        let countdownElem = document.getElementById("countdown");
+        let i = 5;
+        intervalId = setInterval(function countdown() {
+          if (i > 0) {
+            countdownElem.style.display = "block";
+            countdownElem.innerText = i--;
+          } else {
+            clearInterval(intervalId);
+            countdownElem.style.display = "none";
+            start(false);
+          }
+        }, 1000);
+      }
+
+    </script>
+  </body>
+</html>
