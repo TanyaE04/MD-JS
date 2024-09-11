@@ -92,7 +92,7 @@
       function convertBDay(dateStr) {
         const bDay = new Date(dateStr);
         const now = new Date();
-        let year = bDay.getMonth() >= now.getMonth() ? now.getFullYear() : ++now.getFullYear();
+        let year = bDay.getMonth() >= now.getMonth() ? now.getFullYear() : now.getFullYear() + 1;
         return new Date(year, bDay.getMonth(), bDay.getDate());
       }
 
