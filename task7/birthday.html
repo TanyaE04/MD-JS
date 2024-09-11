@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Birthday</title>
+    <link rel="stylesheet" href="../css/birthday.css" />
+  </head>
+
+  <body>
+    <div id="inputs">
+    <input
+      type="text"
+      id="name"
+      placeholder="Введите свое имя"
+      required="true"
+    />
+    <input
+      type="date"
+      id="date"
+      placeholder="Введите дату рождения"
+      required="true"
+    />
+    <button type="submit" id="btn" disabled="true">Подтвердить</button>
+  </div>
+    <div class="welcome">
+      <h1 id="welcomeMessage"></h1>
+    </div>
+    <div class="countdown" style="width: 800px; height: 300px;">
+      <h2>До дня рождения осталось:</h2>
+      <div class="periods">
+        <span>Месяцы</span>
+        <span>Дни</span>
+        <span>Часы</span>
+        <span>Минуты</span>
+        <span>Секунды</span>
+      </div>
+      <canvas id="counter"></canvas>
+    </div>
+
+    <script>
+
+      const width = 800;
+      const height = 300;
+      const inputs = document.getElementById("inputs");
+      const btn = document.getElementById("btn");
+      const countdownElement = document.querySelector(".countdown");
+      countdownElement.style.width = width + "px";
+      countdownElement.style.height = height + "px";
+      const canvas = document.getElementById("counter");
+      const nameInput = document.getElementById("name");
+      const dateInput = document.getElementById("date");
+      let birthday = null;
+
+      const counter = {
+        months: 0,
+        days: 0,
+        hours: 0,
+        mins: 0,
+        sec: 0
+      }
+
+      inputs.addEventListener("input", () => {
+        if (nameInput.value && dateInput.value) {
+          btn.disabled = false;
+        } else {
+          btn.disabled = true;
+        }
+      })
+
+      btn.addEventListener("click", (event) => {
+        event.preventDefault();
+        window.localStorage.setItem("date", dateInput.value);
+        window.localStorage.setItem("name", nameInput.value)
+        hideTheForm();
+      })
+
+      if (window.localStorage.getItem("date")) {
+        hideTheForm();
+        birthday = convertBDay(window.localStorage.getItem("date"));
+        document.getElementById("welcomeMessage").innerText = `Привет, ${window.localStorage.getItem("name")}!`;
+        countdownElement.style.display = "block";
+        requestAnimationFrame(drawCountdown);
+      }
+
+      function hideTheForm() {
+        dateInput.style.display = "none";
+        nameInput.style.display = "none";
+        btn.style.display = "none";
+      }
+
+      function convertBDay(dateStr) {
+        const bDay = new Date(dateStr);
+        const now = new Date();
+        let year = bDay.getMonth() >= now.getMonth() ? now.getFullYear() : ++now.getFullYear();
+        return new Date(year, bDay.getMonth(), bDay.getDate());
+      }
+
+      function drawCountdown() {
+        canvas.width = width;
+        canvas.height = height / 3;
+        const cellWidth = width / 5;
+        const cellHeight = canvas.height;
+        const ctx = canvas.getContext("2d");
+        let centerX = cellWidth / 2;
+        let startX = 0;
+
+        calcTime();
+
+        ctx.font = "56px serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "black";
+
+        for (let item in counter) {
+          ctx.rect(startX, 0, cellWidth, cellHeight);
+          ctx.stroke();
+          startX +=cellWidth;
+          ctx.fillText(`${counter[item]}`, centerX, cellHeight / 2);
+          centerX += cellWidth;
+        }
+
+        requestAnimationFrame(drawCountdown);
+
+      }
+
+      function calcTime() {
+        const now = new Date();
+        counter.sec = Math.floor((birthday.getTime() - now.getTime()) / 1000);
+        
+        if (counter.sec >= 2592000) {
+          counter.months = Math.floor(counter.sec / 2592000);
+          counter.sec = counter.sec % 2592000;
+        }
+        if (counter.sec >= 86400) {
+          counter.days = Math.floor(counter.sec / 86400);
+          counter.sec = counter.sec % 86400;
+        }
+        if (counter.sec >= 3600) {
+          counter.hours = Math.floor(counter.sec / 3600);
+          counter.sec = counter.sec % 3600;
+        }
+        if (counter.sec >= 60) {
+          counter.mins = Math.floor(counter.sec / 60);
+          counter.sec = counter.sec % 60;
+        }
+      }
+    </script>
+  </body>
+</html>
