@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clock-MVC</title>
+    <link rel="stylesheet" href="../css/clock.css" />
+</head>
+<style>
+</style>
+
+<body>
+    <div class="box">
+        <div id="clock1" class="container">
+            <div class="control">
+                <button type="button" class="btn start">Старт</button>
+                <button type="button" class="btn stop">Стоп</button>
+                <span class="time-zone" data-time-zone="America/New_York">Нью-Йорк (GMT-5)</span>
+            </div>
+            <div class="picture"></div>
+        </div>
+        <div id="clock2" class="container">
+            <div class="control">
+                <button type="button" class="btn start">Старт</button>
+                <button type="button" class="btn stop">Стоп</button>
+                <span class="time-zone" data-time-zone="Europe/London">Лондон (GMT+1)</span>
+            </div>
+            <div class="picture"></div>
+        </div>
+        <div id="clock3" class="container">
+            <div class="control">
+                <button type="button" class="btn start">Старт</button>
+                <button type="button" class="btn stop">Стоп</button>
+                <span class="time-zone" data-time-zone="Europe/Berlin">Берлин (GMT+2)</span>
+            </div>
+            <div class="picture"></div>
+        </div>
+        <div id="clock4" class="container">
+            <div class="control">
+                <button type="button" class="btn start">Старт</button>
+                <button type="button" class="btn stop">Стоп</button>
+                <span class="time-zone" data-time-zone="Europe/Minsk">Минск (GMT+3)</span>
+            </div>
+            <div class="picture"></div>
+        </div>
+        <div id="clock5" class="container">
+            <div class="control">
+                <button type="button" class="btn start">Старт</button>
+                <button type="button" class="btn stop">Стоп</button>
+                <span class="time-zone" data-time-zone="Asia/Shanghai">Шанхай (GMT+8)</span>
+            </div>
+            <div class="picture"></div>
+        </div>
+        <div id="clock6" class="container">
+            <div class="control">
+                <button type="button" class="btn start">Старт</button>
+                <button type="button" class="btn stop">Стоп</button>
+                <span class="time-zone" data-time-zone="Asia/Tokyo">Токио (GMT+9)</span>
+            </div>
+            <div class="picture"></div>
+        </div>
+    </div>
+
+    <script src="../js/Clock.js"></script>
+    <script src="../js/ClockControllerButtons.js"></script>
+    <script src="../js/ClockViewDOM.js"></script>
+    <script src="../js/ClockViewCanvas.js"></script>
+    <script src="../js/ClockViewSVG.js"></script>
+    
+    <script>
+        //dom clocks
+        const clock1 = document.getElementById("clock1");
+        const viewDOMClock = new ClockViewDOM(clock1);
+        const modelDOMClock = new Clock(viewDOMClock);
+        const controllerDOMClock = new ClockControllerButtons(modelDOMClock, clock1);
+
+        const clock2 = document.getElementById("clock2");
+        const viewDOMClock2 = new ClockViewDOM(clock2);
+        const modelDOMClock2 = new Clock(viewDOMClock2);
+        const controllerDOMClock2 = new ClockControllerButtons(modelDOMClock2, clock2);
+        
+        //svg clocks
+        const clock3 = document.getElementById("clock3");
+        const viewSVGClock = new ClockViewSVG(clock3);
+        const modelSVGClock = new Clock(viewSVGClock);
+        const controllerSVGClock = new ClockControllerButtons(modelSVGClock, clock3);
+
+        const clock4 = document.getElementById("clock4");
+        const viewSVGClock2 = new ClockViewSVG(clock4);
+        const modelSVGClock2 = new Clock(viewSVGClock2);
+        const controllerSVGClock2 = new ClockControllerButtons(modelSVGClock2, clock4);
+
+        //canvas clocks
+        const clock5 = document.getElementById("clock5");
+        const viewCanvasClock = new ClockViewCanvas(clock5);
+        const modelCanvasClock = new Clock(viewCanvasClock);
+        const controllerCanvasClock = new ClockControllerButtons(modelCanvasClock, clock5);  
+
+        const clock6 = document.getElementById("clock6");
+        const viewCanvasClock2 = new ClockViewCanvas(clock6);
+        const modelCanvasClock2 = new Clock(viewCanvasClock2);
+        const controllerCanvasClock2 = new ClockControllerButtons(modelCanvasClock2, clock6);
+       
+       
+    </script>
+</body>
+
+</html>
