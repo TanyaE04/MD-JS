@@ -6,12 +6,14 @@ class ClockControllerButtons {
         this.timeZone = container.querySelector(".time-zone").dataset.timeZone;
 
         const btnStart = container.querySelector(".start");
-        btnStart.addEventListener("click", () => {
+        btnStart.addEventListener("click", (event) => {
+            event.preventDefault();
             this.model.start(this.timeZone);
         })
 
         const btnStop = container.querySelector(".stop");
-        btnStop.addEventListener("click", () => {
+        btnStop.addEventListener("click", (event) => {
+            event.preventDefault();
             this.model.stop();
         })
 

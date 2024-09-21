@@ -10,6 +10,7 @@ class Clock {
     }
 
     start (timeZone) {
+        clearInterval(this.timerId);
         this.timerId = setInterval (() => {
             this.setCurrentTime(timeZone);
             this.view.tick(this.currentTime);
