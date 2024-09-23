@@ -68,7 +68,7 @@ text {
 
 .hand {
     width: 3px;
-    transform-origin: 0 0;
+    transform-origin: 0 center;
     position: absolute;
   }
 
