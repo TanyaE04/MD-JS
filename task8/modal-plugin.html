@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Modal default MVC</title>
+  <link href="https://fonts.googleapis.com/css?family=Exo+2" rel="stylesheet">
+  <link rel="stylesheet" href="../css/modals.css">
+</head>
+
+<body>
+
+  <div class="container">
+    <h1 style="text-align: center;">Создание модального окошка</h1>
+    <div>
+      <p class="btn">
+        <a href="#" data-supermodal="data-form" class="modal-open" title="">Просто форма</a>
+      </p>
+      <p class="btn">
+        <a href="#" data-supermodal="video-content" class="modal-open" title="">Что такое Event Loop?</a>
+      </p>
+      <p class="btn">
+        <a href="#" data-supermodal="thanks" class="modal-open" title="">Благодарность</a>
+      </p>
+      <p class="btn">
+        <a href="#" data-supermodal="data-form" data-supermodal-title="Введите логин и пароль" 
+        data-supermodal-content='<form class="form-field">
+          <label for="username">Логин:</label><br>
+          <input type="text" id="username" name="username"><br>
+          <label for="pwd">Пароль:</label><br>
+          <input type="password" id="pwd" name="pwd">
+        </form>' 
+          class="modal-open" title="">Окно с новым заголовком и контентом</a>
+      </p>
+      <p class="btn">
+        <a href="#" data-supermodal="video-content" data-supermodal-title="Event Loop in JS" class="modal-open" title=""
+          data-supermodal-content='<iframe width="100%" height="100%" src="https://www.youtube.com/embed/8aGhZQkoFbQ" 
+          title="Филипп Робертс: Что за чертовщина такая event loop? | JSConf EU 2014" frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+          referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>'>Еще одно видео </a>
+      </p>
+      <p class="btn">
+        <a href="#" data-supermodal="default" data-supermodal-title="Добро пожаловать!" data-supermodal-content='Спасибо, что заглянули:)
+        Будем радовать Вас интересным контентом!' class="modal-open" title="">Дефолтное окно</a>
+      </p>
+    </div>
+
+    <div class="modal modal_hide" id="data-form">
+      <header class="modal__header">
+        <a href="#" class="modal__close" title="Закрыть модальное окно">Закрыть</a>
+        <h2>Введите данные</h2>
+      </header>
+      <main class="modal__content">
+        <div class="form-field">
+          <label for="name">Ваше имя:</label>
+          <input required class="input__default" type="text" id="name" name="name">
+        </div>
+        <div class="form-field">
+          <label>Ваш день рождения:</label>
+          <input required type="number" class="input__date-birth" id="birth-day" name="name" placeholder="День"> -
+          <input required type="number" class="input__date-birth" id="birth-month" name="name" placeholder="Месяц"> -
+          <input required type="number" class="input__date-birth" id="birth-year" name="name" placeholder="Год">
+        </div>
+      </main>
+      <footer class="modal__footer">
+        <button class="modal__cancel" title="Отмена">Отмена</button>
+        <button id="modal-save" class="modal__save" title="Сохранить">Сохранить данные</button>
+      </footer>
+    </div>
+
+    <div class="modal modal_hide" id="video-content">
+      <header>
+        <a href="#" class="modal__close" title="Закрыть модальное окно">Закрыть</a>
+        <h2>Event Loop Простыми словами</h2>
+      </header>
+      <main class="modal__content modal-video">
+        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/377qAu37OTE"
+          title="Что такое Event Loop в JavaScript? Event Loop Простыми словами" frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </main>
+    </div>
+
+    <div class="modal thanks modal_hide" id="thanks">
+      <header class="modal__header">
+        <h2>Спасибо за ваш заказ!</h2>
+      </header>
+      <main class="modal__content thanks-content">
+        <h3><i>Мы сообщим вам, как только он будет отправлен.
+            Обращайтесь к нашей дружной команде поддержки с любыми вопросами, которые у вас есть. Будем рады помочь!</i>
+          </р>
+      </main>
+      <footer class="modal__footer">
+        <button class="modal__cancel" title="Отмена">Закрыть</button>
+      </footer>
+    </div>
+
+  </div>
+
+  <script src="../js/ModalPlugin.js"></script>
+  <script>
+    ModalPlugin.init(document.querySelector(".container"));
+  </script>
+</body>
+
+</html>
